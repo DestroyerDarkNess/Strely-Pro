@@ -1242,6 +1242,9 @@ CloseOut:
     Dim StartupResult As Boolean = False
     Dim RegeditResult As Boolean = False
     Dim AppDataResult As Boolean = False
+
+    Dim CustomResult As Boolean = False
+
     Dim FinalizeAntivir As Boolean = False
 
     Dim Progress As Integer = 0
@@ -1268,6 +1271,7 @@ CloseOut:
         StartupEngine.Clear()
         RegeditEngine.Clear()
         AppDataEngine.Clear()
+        CustomScannerEngine.Clear()
         Bouton1.Visible = False
         PanelBoxVir.Visible = False
     End Sub
@@ -1275,73 +1279,137 @@ CloseOut:
     Private Sub AnimaButton1_Click(sender As Object, e As EventArgs) Handles AnimaButton1.Click
         RestoreSett()
         CleanVirusPanel.Size = New Size(737, 468)
+        Label12.Text = "Quick Scan"
         TimerScan.Enabled = True
         Execution_Start()
         Dim tskAntivir As New Task(ScanAsyc, TaskCreationOptions.LongRunning)
         tskAntivir.Start()
     End Sub
 
+    Public Filedir As String()
+
     Private Sub AnimaButton2_Click(sender As Object, e As EventArgs) Handles AnimaButton2.Click
-
-
-
+        If OpenFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
+            Filedir = OpenFileDialog1.FileNames
+            RestoreSett()
+            CleanVirusPanel.Size = New Size(737, 468)
+            Label12.Text = "Custom Scan"
+            TimerScan.Enabled = True
+            Execution_Start()
+            Dim tskAntivir As New Task(ScanAsyc, TaskCreationOptions.LongRunning)
+            tskAntivir.Start()
+        End If
     End Sub
+
+    Public Function IsFolder(ByVal path As String) As Boolean
+        Return ((File.GetAttributes(path) And FileAttributes.Directory) = FileAttributes.Directory)
+    End Function
 
     Dim GenerateListBool As Boolean = False
 
     Private Sub TimerScan_Tick(sender As Object, e As EventArgs) Handles TimerScan.Tick
         Progress += 1
+        If Label12.Text = "Quick Scan" Then
 
-        If StartupResult = True Then
+            If StartupResult = True Then
 
-            If Not Progress1.Value = 100 Then
-                ' Progress += 1
-                Progress1.Value += 20
-            Else
-                StatusLabel.Text = "Startup Scanned Successfully!"
+                If Not Progress1.Value = 100 Then
+                    ' Progress += 1
+                    Progress1.Value += 20
+                Else
+                    StatusLabel.Text = "Startup Scanned Successfully!"
+                End If
+
             End If
 
-        End If
-
-        If RegeditResult = True Then
-            If Not Progress2.Value = 100 Then
-                ' Progress += 1
-                Progress2.Value += 20
-            Else
-                StatusLabel.Text = "Startup_Regedit Scanned Successfully!"
-            End If
-        End If
-
-        If AppDataResult = True Then
-            If Not Progress3.Value = 100 Then
-                ' Progress += 1
-                Progress3.Value += 20
-            Else
-                StatusLabel.Text = "Misc Folders Scanned Successfully!"
-            End If
-        End If
-
-        If FinalizeAntivir = True Then
-            If GenerateListBool = False Then
-                GenericList()
-                GenerateListBool = True
-            End If
-        End If
-
-        If Progress1.Value = 100 Then
-            If Progress2.Value = 100 Then
-                If Progress3.Value = 100 Then
-                    If Progress4.Value = 100 Then
-                        StatusLabel.Text = "Number of threats found : " & PanelBoxVir.Controls.Count
-                        Execution_End()
-                        TimerScan.Enabled = False
-                    Else
-                        Progress4.Value += 10
-                    End If
-
+            If RegeditResult = True Then
+                If Not Progress2.Value = 100 Then
+                    ' Progress += 1
+                    Progress2.Value += 20
+                Else
+                    StatusLabel.Text = "Startup_Regedit Scanned Successfully!"
                 End If
             End If
+
+            If AppDataResult = True Then
+                If Not Progress3.Value = 100 Then
+                    ' Progress += 1
+                    Progress3.Value += 20
+                Else
+                    StatusLabel.Text = "Misc Folders Scanned Successfully!"
+                End If
+            End If
+
+            If FinalizeAntivir = True Then
+                If GenerateListBool = False Then
+                    GenericList()
+                    GenerateListBool = True
+                End If
+            End If
+
+            If Progress1.Value = 100 Then
+                If Progress2.Value = 100 Then
+                    If Progress3.Value = 100 Then
+                        If Progress4.Value = 100 Then
+                            StatusLabel.Text = "Number of threats found : " & PanelBoxVir.Controls.Count
+                            Execution_End()
+                            TimerScan.Enabled = False
+                        Else
+                            Progress4.Value += 10
+                        End If
+
+                    End If
+                End If
+            End If
+
+        ElseIf Label12.Text = "Custom Scan" Then
+
+            If CustomResult = True Then
+
+                If Not Progress1.Value = 100 Then
+                    ' Progress += 1
+                    Progress1.Value += 20
+                Else
+                    StatusLabel.Text = "Startup Scanned Successfully!"
+                End If
+
+                If Not Progress2.Value = 100 Then
+                    ' Progress += 1
+                    Progress2.Value += 20
+                Else
+                    StatusLabel.Text = "Startup_Regedit Scanned Successfully!"
+                End If
+
+                If Not Progress3.Value = 100 Then
+                    ' Progress += 1
+                    Progress3.Value += 20
+                Else
+                    StatusLabel.Text = "Misc Folders Scanned Successfully!"
+                End If
+
+                If GenerateListBool = False Then
+                    GenericList()
+                    GenerateListBool = True
+                End If
+
+            End If
+
+            If Progress1.Value = 100 Then
+                If Progress2.Value = 100 Then
+                    If Progress3.Value = 100 Then
+                        If Progress4.Value = 100 Then
+                            StatusLabel.Text = "Number of threats found : " & PanelBoxVir.Controls.Count
+                            Execution_End()
+                            TimerScan.Enabled = False
+                        Else
+                            Progress4.Value += 10
+                        End If
+                    End If
+                End If
+            End If
+
         End If
+
 
     End Sub
 
@@ -1370,33 +1438,52 @@ CloseOut:
     Dim ScanAsyc As New Action(
    Sub()
        Try
-           StartupResult = StartupAnalize()
-           If StartupResult = True Then
-               If StartupEngine.Count > 0 Then
-                   For Each Result As String In StartupEngine
-                       GeneralResult.Add(Result)
-                   Next
+           If Label12.Text = "Quick Scan" Then
+               StartupResult = StartupAnalize()
+               If StartupResult = True Then
+                   If StartupEngine.Count > 0 Then
+                       For Each Result As String In StartupEngine
+                           GeneralResult.Add(Result)
+                       Next
+                   End If
                End If
+
+               RegeditResult = RegeditAnalize()
+               If RegeditResult = True Then
+                   If RegeditEngine.Count > 0 Then
+                       For Each Result As String In RegeditEngine
+                           GeneralResult.Add(Result)
+                       Next
+                   End If
+               End If
+
+               AppDataResult = AppDataAnalize()
+               If AppDataResult = True Then
+                   If AppDataEngine.Count > 0 Then
+                       For Each Result As String In AppDataEngine
+                           GeneralResult.Add(Result)
+                       Next
+                   End If
+               End If
+
+               FinalizeAntivir = True
+
+           ElseIf Label12.Text = "Custom Scan" Then
+
+               CustomResult = CustomScannerStart(Filedir)
+
+               If CustomResult = True Then
+                   If CustomScannerEngine.Count > 0 Then
+                       For Each Result As String In CustomScannerEngine
+                           GeneralResult.Add(Result)
+                       Next
+                   End If
+               End If
+
+               FinalizeAntivir = True
+
            End If
 
-           RegeditResult = RegeditAnalize()
-           If RegeditResult = True Then
-               If RegeditEngine.Count > 0 Then
-                   For Each Result As String In RegeditEngine
-                       GeneralResult.Add(Result)
-                   Next
-               End If
-           End If
-
-           AppDataResult = AppDataAnalize()
-           If AppDataResult = True Then
-               If AppDataEngine.Count > 0 Then
-                   For Each Result As String In AppDataEngine
-                       GeneralResult.Add(Result)
-                   Next
-               End If
-           End If
-           FinalizeAntivir = True
        Catch ex As Exception
            WriteLog(ex.Message, InfoType.Exception)
        End Try
@@ -1405,7 +1492,6 @@ CloseOut:
     Private Sub PictureBox6_Click(sender As Object, e As EventArgs) Handles PictureBox6.Click
         RestoreSett()
     End Sub
-
 
     Public Sub AddtoPanelBox(ByVal Dir As String, ByVal Name As String, ByVal SigNature As String, ByVal Risk As DetectionControl.InfoType)
         Dim ControlA As DetectionControl = New DetectionControl
@@ -1692,14 +1778,113 @@ NextFile:
         Return Shortcut.TargetPath.ToString & "|" & Shortcut.Arguments
     End Function
 
+
+    Public Function KillProcess(ByVal Proc As String) As Boolean
+        Dim ProcCount As Integer = 0
+
+        For Each process As Process In process.GetProcessesByName(Proc)
+            process.Kill()
+            ProcCount += 1
+        Next
+
+        If ProcCount > 0 Then
+            Return True
+        Else
+            Return False
+        End If
+
+    End Function
+
+    Private Function GetFileAssociation(ByVal ext As String) As String
+        Try
+            Dim RegKey As Microsoft.Win32.RegistryKey
+            RegKey = My.Computer.Registry.ClassesRoot.OpenSubKey(ext, False)
+            If RegKey Is Nothing Then Return "-1"
+            RegKey = My.Computer.Registry.ClassesRoot.OpenSubKey(RegKey.GetValue(Nothing).ToString & "\shell\open\command")
+            Dim result As String = RegKey.GetValue(Nothing).ToString
+            Dim exefile As String = Split(result, ".exe")(0) & ".exe"
+            Return exefile
+        Catch ex As Exception
+            Return "-1"
+        End Try
+    End Function
+
+    Public Function GenerateRegeditFormat(ByVal Str As String(), ByVal reformed As String) As String
+        Str(0) = reformed
+        Dim value As String = String.Join("\", Str)
+        Return Path.GetDirectoryName(value)
+    End Function
+
+#Region " Code Execution Time "
+
+    ' [ Code Execution Time ]
+    '
+    ' Examples :
+    ' Execution_Start() : Threading.Thread.Sleep(500) : Execution_End()
+
+    Dim Execution_Watcher As New Stopwatch
+
+    Private Sub Execution_Start()
+        If Execution_Watcher.IsRunning Then Execution_Watcher.Restart()
+        Execution_Watcher.Start()
+    End Sub
+
+    Private Sub Execution_End()
+        If Execution_Watcher.IsRunning Then
+            Timestamp.Text = Execution_Watcher.Elapsed.Hours & "h" & _
+                            ":" & Execution_Watcher.Elapsed.Minutes & "m" & _
+                            ":" & Execution_Watcher.Elapsed.Seconds & "s" & _
+                            ":" & Execution_Watcher.Elapsed.Milliseconds & "ms"
+            Execution_Watcher.Reset()
+        Else
+
+
+        End If
+    End Sub
+
+    Private Sub Execution_End1()
+        If Execution_Watcher.IsRunning Then
+            MessageBox.Show("Execution watcher finished:" & vbNewLine & vbNewLine & _
+                            "[H:M:S:MS]" & vbNewLine & _
+                            Execution_Watcher.Elapsed.Hours & _
+                            ":" & Execution_Watcher.Elapsed.Minutes & _
+                            ":" & Execution_Watcher.Elapsed.Seconds & _
+                            ":" & Execution_Watcher.Elapsed.Milliseconds & _
+                            vbNewLine & _
+                            vbNewLine & _
+                            "Total H: " & Execution_Watcher.Elapsed.TotalHours & vbNewLine & vbNewLine & _
+                            "Total M: " & Execution_Watcher.Elapsed.TotalMinutes & vbNewLine & vbNewLine & _
+                            "Total S: " & Execution_Watcher.Elapsed.TotalSeconds & vbNewLine & vbNewLine & _
+                            "Total MS: " & Execution_Watcher.ElapsedMilliseconds & vbNewLine, _
+                            "Code execution time", _
+                            MessageBoxButtons.OK, _
+                            MessageBoxIcon.Information, _
+                            MessageBoxDefaultButton.Button1)
+            Execution_Watcher.Reset()
+        Else
+            MessageBox.Show("Execution watcher never started.", _
+                            "Code execution time", _
+                            MessageBoxButtons.OK, _
+                            MessageBoxIcon.Error, _
+                            MessageBoxDefaultButton.Button1)
+        End If
+    End Sub
+
+#End Region
+
 #End Region
 
 #End Region
 
+#Region " QuikScanner "
 
     Private Sub Bouton1_Click(sender As Object, e As EventArgs) Handles Bouton1.Click
         Try
-            Dim CleanResult As Boolean = CleanAntivir()
+            If Label12.Text = "Quick Scan" Then
+                Dim CleanResult As Boolean = CleanAntivir()
+            ElseIf Label12.Text = "Custom Scan" Then
+
+            End If
         Catch ex As Exception
             WriteLog(ex.Message, InfoType.Exception)
         End Try
@@ -1778,104 +1963,120 @@ Jump:
         Return True
     End Function
 
-    Private Function GetFileAssociation(ByVal ext As String) As String
-        Try
-            Dim RegKey As Microsoft.Win32.RegistryKey
-            RegKey = My.Computer.Registry.ClassesRoot.OpenSubKey(ext, False)
-            If RegKey Is Nothing Then Return "-1"
-            RegKey = My.Computer.Registry.ClassesRoot.OpenSubKey(RegKey.GetValue(Nothing).ToString & "\shell\open\command")
-            Dim result As String = RegKey.GetValue(Nothing).ToString
-            Dim exefile As String = Split(result, ".exe")(0) & ".exe"
-            Return exefile
-        Catch ex As Exception
-            Return "-1"
-        End Try
-     End Function
 
-    Public Function GenerateRegeditFormat(ByVal Str As String(), ByVal reformed As String) As String
-        Str(0) = reformed
-        Dim value As String = String.Join("\", Str)
-        Return Path.GetDirectoryName(value)
-    End Function
+#End Region
 
-    Public Function KillProcess(ByVal Proc As String) As Boolean
-        Dim ProcCount As Integer = 0
+#Region " CustomScanner "
 
-        For Each process As Process In process.GetProcessesByName(Proc)
-            process.Kill()
-            ProcCount += 1
-        Next
+    Public CustomScannerEngine As New List(Of String)
 
-        If ProcCount > 0 Then
+    Public Function CustomScannerStart(ByVal Filedir As String()) As Boolean
+        If Filedir.Count > 0 Then
+
+            For Each FileorFolder As String In Filedir
+                Dim Check As Boolean = IsFolder(FileorFolder)
+
+                If Check = True Then
+
+                    Dim files As IEnumerable(Of FileInfo) = FileDirSearcher.GetFiles(dirPath:=FileorFolder,
+                                                                         searchOption:=SearchOption.TopDirectoryOnly,
+                                                                         fileNamePatterns:={"*"},
+                                                                         fileExtPatterns:={"*.bat", "*.cmd", "*.vbs", "*.wsf", "*.ps1", "*.js", "*.hta", "*.exe"},
+                                                                         ignoreCase:=True,
+                                                                         throwOnError:=True)
+
+                    For Each File In files
+                        Dim FileP As String = File.FullName
+                        Dim ScanFiles As Boolean = CustomScannerAnalize(FileP)
+
+                    Next
+
+
+                Else
+
+                    Dim ScanFile As Boolean = CustomScannerAnalize(FileorFolder)
+
+                End If
+
+            Next
             Return True
-        Else
-            Return False
         End If
-
+        Return False
     End Function
 
-#Region " Medidor "
+    Public Function CustomScannerAnalize(ByVal DirPath As String) As Boolean
 
-   #Region " Code Execution Time "
+        Dim FileP As String = DirPath 'File.FullName
 
-    ' [ Code Execution Time ]
-    '
-    ' // By Elektro H@cker
-    '
-    ' Examples :
-    ' Execution_Start() : Threading.Thread.Sleep(500) : Execution_End()
+        Dim Extension As String = LCase(Path.GetExtension(FileP))
 
-    Dim Execution_Watcher As New Stopwatch
+        Select Case Extension
+            Case ".exe" : GoTo EXE
+            Case ".vbs" : GoTo VBS
+            Case ".wsf" : GoTo VBS
+            Case ".bat" : GoTo BAT
+            Case ".cmd" : GoTo BAT
+            Case ".js" : GoTo JS
+            Case ".ps1" : GoTo JS
+            Case ".hta" : GoTo HTA
+        End Select
 
-    Private Sub Execution_Start()
-        If Execution_Watcher.IsRunning Then Execution_Watcher.Restart()
-        Execution_Watcher.Start()
-    End Sub
+        Return False
 
-    Private Sub Execution_End()
-        If Execution_Watcher.IsRunning Then
-            Timestamp.Text = Execution_Watcher.Elapsed.Hours & "h" & _
-                            ":" & Execution_Watcher.Elapsed.Minutes & "m" & _
-                            ":" & Execution_Watcher.Elapsed.Seconds & "s" & _
-                            ":" & Execution_Watcher.Elapsed.Milliseconds & "ms"
-            Execution_Watcher.Reset()
-        Else
+EXE:
+        If IsNetAssembly(FileP) = True Then
+            Dim scan As Boolean = NetScan(FileP)
+            If scan = True Then
+                Dim DetectFamily As String = String.Empty
+                If Not NetAnalysis.Detection1 = String.Empty Then
+                    DetectFamily = NetAnalysis.Detection1
+                ElseIf Not NetAnalysis.Detection2 = String.Empty Then
+                    DetectFamily = NetAnalysis.Detection2
+                End If
 
-
+                If DetectFamily = String.Empty Then
+                    CustomScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.Win32, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+                Else
+                    CustomScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.Win32, Family.Inde, VariantL.U, Suffixes.gen, DetectFamily) & "|" & "H")
+                End If
+            End If
         End If
-    End Sub
 
-    Private Sub Execution_End1()
-        If Execution_Watcher.IsRunning Then
-            MessageBox.Show("Execution watcher finished:" & vbNewLine & vbNewLine & _
-                            "[H:M:S:MS]" & vbNewLine & _
-                            Execution_Watcher.Elapsed.Hours & _
-                            ":" & Execution_Watcher.Elapsed.Minutes & _
-                            ":" & Execution_Watcher.Elapsed.Seconds & _
-                            ":" & Execution_Watcher.Elapsed.Milliseconds & _
-                            vbNewLine & _
-                            vbNewLine & _
-                            "Total H: " & Execution_Watcher.Elapsed.TotalHours & vbNewLine & vbNewLine & _
-                            "Total M: " & Execution_Watcher.Elapsed.TotalMinutes & vbNewLine & vbNewLine & _
-                            "Total S: " & Execution_Watcher.Elapsed.TotalSeconds & vbNewLine & vbNewLine & _
-                            "Total MS: " & Execution_Watcher.ElapsedMilliseconds & vbNewLine, _
-                            "Code execution time", _
-                            MessageBoxButtons.OK, _
-                            MessageBoxIcon.Information, _
-                            MessageBoxDefaultButton.Button1)
-            Execution_Watcher.Reset()
-        Else
-            MessageBox.Show("Execution watcher never started.", _
-                            "Code execution time", _
-                            MessageBoxButtons.OK, _
-                            MessageBoxIcon.Error, _
-                            MessageBoxDefaultButton.Button1)
-        End If
-    End Sub
+        GoTo NextFile
+
+VBS:
+        CustomScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.VBS, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+
+        GoTo NextFile
+BAT:
+        CustomScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.WinBAT, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+
+        GoTo NextFile
+JS:
+        CustomScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.JS, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+
+        GoTo NextFile
+PS1:
+        CustomScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.SH, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+
+        GoTo NextFile
+HTA:
+        CustomScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.HTA, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+
+        GoTo NextFile
+
+
+NextFile:
+
+        Return True
+    End Function
 
 #End Region
 
-#End Region
+
+
+
+
 
 End Class
 

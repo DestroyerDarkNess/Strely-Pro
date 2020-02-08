@@ -33,6 +33,7 @@ Partial Class Form1
         Me.Timer4 = New System.Windows.Forms.Timer(Me.components)
         Me.Timer5 = New System.Windows.Forms.Timer(Me.components)
         Me.TimerScan = New System.Windows.Forms.Timer(Me.components)
+        Me.OpenFileDialog1 = New Ookii.Dialogs.VistaOpenFileDialog()
         Me.AscThemeContainer1 = New StrelyCleanner.ascThemeContainer()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.AscTabControl1 = New StrelyCleanner.ascTabControl()
@@ -169,6 +170,13 @@ Partial Class Form1
         '
         'TimerScan
         '
+        '
+        'OpenFileDialog1
+        '
+        Me.OpenFileDialog1.Filter = Nothing
+        Me.OpenFileDialog1.Multiselect = True
+        Me.OpenFileDialog1.ReadOnlyChecked = True
+        Me.OpenFileDialog1.ShowReadOnly = True
         '
         'AscThemeContainer1
         '
@@ -399,9 +407,9 @@ Partial Class Form1
         Me.Label12.ForeColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
         Me.Label12.Location = New System.Drawing.Point(224, 36)
         Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(76, 16)
+        Me.Label12.Size = New System.Drawing.Size(84, 16)
         Me.Label12.TabIndex = 16
-        Me.Label12.Text = "Quick Scan"
+        Me.Label12.Text = "Option Name"
         '
         'Label11
         '
@@ -1226,5 +1234,6 @@ Partial Class Form1
     Friend WithEvents PictureBox7 As System.Windows.Forms.PictureBox
     Friend WithEvents Timestamp As System.Windows.Forms.Label
     Friend WithEvents AnimaStatusBar1 As StrelyCleanner.AnimaStatusBar
+    Friend WithEvents OpenFileDialog1 As Ookii.Dialogs.VistaOpenFileDialog
 
 End Class
