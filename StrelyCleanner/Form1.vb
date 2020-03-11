@@ -1,7 +1,4 @@
 ﻿Imports System.Runtime.InteropServices
-Imports StrelyCleanner.SystemInformation
-Imports StrelyCleanner.BoosterOptimizer
-Imports StrelyCleanner.Protections
 Imports System.Management
 Imports System.Threading
 Imports System.Text
@@ -10,6 +7,9 @@ Imports System.Net
 Imports System.Net.NetworkInformation
 Imports System.ComponentModel
 Imports System.IO
+Imports StrelyCleanner.SystemInformation
+Imports StrelyCleanner.BoosterOptimizer
+Imports StrelyCleanner.Protections
 Imports StrelyCleanner.RegistryScan
 Imports StrelyCleanner.FileDirSearcher
 Imports StrelyCleanner.BinaryCheck
@@ -17,8 +17,11 @@ Imports StrelyCleanner.NetAnalysis
 Imports StrelyCleanner.CARO.malware_naming_scheme
 Imports StrelyCleanner.DestroyerSDK.LogFuncs
 Imports StrelyCleanner.DestroyerSDK.WinPath
+Imports StrelyCleanner.Protections.AntiDumpv3
+Imports System.Net.Sockets
 
 Public Class Form1
+
     Public WithEvents Noticoicon As NotifyIcon = New NotifyIcon
 
     Private Sub Form1_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
@@ -28,11 +31,13 @@ Public Class Form1
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
 
-        'My.Computer.Registry.SetValue(hklmpoliciessystem, "DisableTaskMgr", 1)
+        If My.Computer.FileSystem.FileExists(LogFile) = True Then
+            My.Computer.FileSystem.DeleteFile(LogFile)
+        End If
 
         Try : AddHandler Application.ThreadException, AddressOf Application_Exception_Handler _
-            : Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException, False) _
-            : Catch : End Try
+                : Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException, False) _
+                : Catch : End Try
 
         Main1()
         HomeStart()
@@ -49,19 +54,36 @@ Public Class Form1
         ' ...Or leave empty to ignore it.
     End Sub
 
-    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+    Private Sub Button3_Click(sender As Object, e As EventArgs)
         'AntiDump.StartProtection()
+        ' TextBox2.Text = GetProcessModules(TextBox1.Text)
 
-        For Each nombres In GeneralResult
-            ' Dim ret As Integer = GeneralResult.IndexOf(nombres)
-            GeneralResult.Remove(nombres)
-        Next
-       
+        '  MsgBox(FilesFolderDialog.Getoption().ToString)
+
+     
+        '[12, 13, 15, 17, 21, 23, 25, 27, 31, 32, 35, 37]
+
+        ' Dim int32List As New List(Of String)
+
+        ' int32List = myClientMachineIP.Distinct(EqualityComparer(Of Integer).Default).ToArray
+
+
         '  Me.BackColor = Color.Red
         '  Dim Patha As String = Application.StartupPath
         '  Dim ExeFile As Byte() = System.IO.File.ReadAllBytes(Patha & "\" & "Picker.exe")
         '  RunPE_ish.FUDMemoryExecute(ExeFile)
     End Sub
+
+#Region " PositionForm function "
+
+    Function CenterForm(ByVal Form_to_Center As Form, ByVal Form_Location As Point) As Point
+        Dim FormLocation As New Point
+        FormLocation.X = (Me.Left + (Me.Width - Form_to_Center.Width) / 2) ' set the X coordinates.
+        FormLocation.Y = (Me.Top + (Me.Height - Form_to_Center.Height) / 2) ' set the Y coordinates.
+        Return FormLocation ' return the Location to the Form it was called from.
+    End Function
+
+#End Region
 
 #Region " Form Movement "
 
@@ -778,64 +800,67 @@ ScanS:
     End Sub
 
     Private Sub btnDestroy_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnDestroy.Click
+        Try
+            Dim MainKey As String = Mid(CurrentItem.Location, 1, InStr(CurrentItem.Location, ":", CompareMethod.Binary))
+            Dim SubKey As String = Mid(CurrentItem.Location, InStr(CurrentItem.Location, ":", CompareMethod.Binary) + 1)
+            Dim RC As Integer
+            Dim TempReg
 
-        Dim MainKey As String = Mid(CurrentItem.Location, 1, InStr(CurrentItem.Location, ":", CompareMethod.Binary))
-        Dim SubKey As String = Mid(CurrentItem.Location, InStr(CurrentItem.Location, ":", CompareMethod.Binary) + 1)
-        Dim RC As Integer
-        Dim TempReg
+            Select Case CurrentItem.myType
+                Case modSysCleaner.myType.Registry
+                    Select Case MainKey
+                        Case "CU:"
+                            RC = MsgBox("Are you sure you want to delete registry value: " & SubKey & "\" & CurrentItem.Item & "?", MsgBoxStyle.YesNo, "Confirm Registry Delete")
+                            If RC = vbYes Then
+                                TempReg = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(SubKey, True)
+                                TempReg.deletevalue(CurrentItem.Item)
+                                TempReg.close()
+                                GoTo CloseOut
+                            End If
 
-        Select Case CurrentItem.myType
-            Case modSysCleaner.myType.Registry
-                Select Case MainKey
-                    Case "CU:"
-                        RC = MsgBox("Are you sure you want to delete registry value: " & SubKey & "\" & CurrentItem.Item & "?", MsgBoxStyle.YesNo, "Confirm Registry Delete")
-                        If RC = vbYes Then
-                            TempReg = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(SubKey, True)
-                            TempReg.deletevalue(CurrentItem.Item)
-                            TempReg.close()
-                            GoTo CloseOut
-                        End If
+                        Case "LM:"
+                            RC = MsgBox("Are you sure you want to delete registry value: " & SubKey & "\" & CurrentItem.Item & "?", MsgBoxStyle.YesNo, "Confirm Registry Delete")
+                            If RC = vbYes Then
+                                TempReg = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(SubKey, True)
+                                TempReg.deletevalue(CurrentItem.Item)
+                                TempReg.close()
+                                GoTo CloseOut
+                            End If
+                        Case "U:"
+                            RC = MsgBox("Are you sure you want to delete registry value: " & SubKey & "\" & CurrentItem.Item & "?", MsgBoxStyle.YesNo, "Confirm Registry Delete")
+                            If RC = vbYes Then
+                                TempReg = Microsoft.Win32.Registry.Users.OpenSubKey(SubKey, True)
+                                TempReg.deletevalue(CurrentItem.Item)
+                                TempReg.close()
+                                GoTo CloseOut
+                            End If
+                    End Select
+                Case modSysCleaner.myType.Startup
+                    RC = MsgBox("Are you sure you want to delete startup item: " & CurrentItem.Item & "?", MsgBoxStyle.YesNo, "Confirm File Delete")
+                    If RC = vbYes Then
+                        Try
+                            Kill(CurrentItem.Location & "\" & CurrentItem.Item)
+                        Catch
+                            MsgBox("Failed to delete: " & CurrentItem.Item & ", file may be in use!")
+                        End Try
+                        GoTo CloseOut
+                    End If
 
-                    Case "LM:"
-                        RC = MsgBox("Are you sure you want to delete registry value: " & SubKey & "\" & CurrentItem.Item & "?", MsgBoxStyle.YesNo, "Confirm Registry Delete")
-                        If RC = vbYes Then
-                            TempReg = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(SubKey, True)
-                            TempReg.deletevalue(CurrentItem.Item)
-                            TempReg.close()
-                            GoTo CloseOut
-                        End If
-                    Case "U:"
-                        RC = MsgBox("Are you sure you want to delete registry value: " & SubKey & "\" & CurrentItem.Item & "?", MsgBoxStyle.YesNo, "Confirm Registry Delete")
-                        If RC = vbYes Then
-                            TempReg = Microsoft.Win32.Registry.Users.OpenSubKey(SubKey, True)
-                            TempReg.deletevalue(CurrentItem.Item)
-                            TempReg.close()
-                            GoTo CloseOut
-                        End If
-                End Select
-            Case modSysCleaner.myType.Startup
-                RC = MsgBox("Are you sure you want to delete startup item: " & CurrentItem.Item & "?", MsgBoxStyle.YesNo, "Confirm File Delete")
-                If RC = vbYes Then
-                    Try
-                        Kill(CurrentItem.Location & "\" & CurrentItem.Item)
-                    Catch
-                        MsgBox("Failed to delete: " & CurrentItem.Item & ", file may be in use!")
-                    End Try
-                    GoTo CloseOut
-                End If
+                Case modSysCleaner.myType.SysFile
+                    'If ClearLineFromFile() Then GoTo CloseOut
 
-            Case modSysCleaner.myType.SysFile
-                'If ClearLineFromFile() Then GoTo CloseOut
-
-            Case modSysCleaner.myType.Service
+                Case modSysCleaner.myType.Service
 
 
-        End Select
+            End Select
 
-        Exit Sub
+            Exit Sub
 CloseOut:
-        panItemDetail.Visible = False
-        LoadItems()
+            panItemDetail.Visible = False
+            LoadItems()
+        Catch ex As Exception
+            WriteLog(ex.Message, InfoType.Exception)
+        End Try
     End Sub
     Private Function ClearLineFromFile() As Boolean
         Dim OldFileNum, NewFileNum As Integer
@@ -1032,7 +1057,7 @@ CloseOut:
                     ThirteenTextBox1.Text = ThirteenTextBox1.Text & vbNewLine & _
                     table(index).dwType.ToString & vbTab & vbTab & "IP: " + ip.ToString() & vbTab & vbTab & "MAC: " & MACtoString(mac) & vbTab & vbTab & "PING: " & PingS
 
-                   End If
+                End If
             Next
 
         Finally
@@ -1159,29 +1184,33 @@ CloseOut:
 
     Public Sub IniciateAds()
         DownloadStringAsyc("https://www.dropbox.com/s/9pn3tfcr29l35h5/Ads.txt?dl=1")
-        Dim pcb As PictureBox = Me.PictureBoxAds
-        Dim gif As New GIF(My.Resources.ads1) '"C:\File.gif"
+        Try
+            Dim pcb As PictureBox = Me.PictureBoxAds
+            Dim gif As New GIF(My.Resources.ads1) '"C:\File.gif"
 
-        Do Until gif.EndOfFrames ' Iterate frames until the end of frame count.
-            If ADS = True Then
-                Exit Sub
-            Else
-                ' Free previous Bitmap object.
-                If (pcb.Image IsNot Nothing) Then
-                    pcb.Image.Dispose()
-                    pcb.Image = Nothing
+            Do Until gif.EndOfFrames ' Iterate frames until the end of frame count.
+                If ADS = True Then
+                    Exit Sub
+                Else
+                    ' Free previous Bitmap object.
+                    If (pcb.Image IsNot Nothing) Then
+                        pcb.Image.Dispose()
+                        pcb.Image = Nothing
+                    End If
+
+                    pcb.Image = gif.NextFrame()
+                    'Thread.Sleep(60) ' Simulate a FPS thingy.
+                    Application.DoEvents()
+
+                    If (gif.EndOfFrames) Then
+                        ' Set active frame to 0 for infinite loop:
+                        gif.ActiveFrameIndex = 0
+                    End If
                 End If
-
-                pcb.Image = gif.NextFrame()
-                'Thread.Sleep(60) ' Simulate a FPS thingy.
-                Application.DoEvents()
-
-                If (gif.EndOfFrames) Then
-                    ' Set active frame to 0 for infinite loop:
-                    gif.ActiveFrameIndex = 0
-                End If
-            End If
-        Loop
+            Loop
+        Catch ex As Exception
+            Me.PictureBoxAds.Image = My.Resources.ads1 '"C:\File.gif"
+        End Try
     End Sub
 
     Private Sub CLIEN_DownloadFileCompleted(sender As Object, e As System.ComponentModel.AsyncCompletedEventArgs) Handles CLIEN.DownloadFileCompleted
@@ -1228,7 +1257,7 @@ CloseOut:
     End Sub
 
 #End Region
-  
+
 #Region " Antivirus "
 
     Public GeneralResult As New List(Of String)
@@ -1256,6 +1285,7 @@ CloseOut:
         AppDataResult = False
         FinalizeAntivir = False
         GenerateListBool = False
+        CustomResult = False
         Progress = 0
         DetectionsCount = 0
         Local_X = 20
@@ -1289,8 +1319,24 @@ CloseOut:
     Public Filedir As String()
 
     Private Sub AnimaButton2_Click(sender As Object, e As EventArgs) Handles AnimaButton2.Click
-        If OpenFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
-            Filedir = OpenFileDialog1.FileNames
+        FilesFolderDialog.ShowDialog()
+        Dim Dirty As String = FilesFolderDialog.SelectedPath
+        If Not Dirty = "" Then
+            Filedir = {Dirty}
+            RestoreSett()
+            CleanVirusPanel.Size = New Size(737, 468)
+            Label12.Text = "Custom Scan"
+            TimerScan.Enabled = True
+            Execution_Start()
+            Dim tskAntivir As New Task(ScanAsyc, TaskCreationOptions.LongRunning)
+            tskAntivir.Start()
+        End If
+    End Sub
+
+    Public Sub StartCustom()
+        If VistaFolderBrowserDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
+            Dim Ahsa As String() = {VistaFolderBrowserDialog1.SelectedPath}
+            Filedir = Ahsa
             RestoreSett()
             CleanVirusPanel.Size = New Size(737, 468)
             Label12.Text = "Custom Scan"
@@ -1470,10 +1516,11 @@ CloseOut:
 
            ElseIf Label12.Text = "Custom Scan" Then
 
-               CustomResult = CustomScannerStart(Filedir)
+               CustomResult = CustomScannerStart(Filedir, SearchOption.AllDirectories)
 
                If CustomResult = True Then
                    If CustomScannerEngine.Count > 0 Then
+                       ' MsgBox(CustomScannerEngine(0).ToString)
                        For Each Result As String In CustomScannerEngine
                            GeneralResult.Add(Result)
                        Next
@@ -1542,7 +1589,7 @@ CloseOut:
 
                 ElseIf ExeFileP = "wscript.exe" Then
                     StartupEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.VBS, Family.Inde, VariantL.U, Suffixes.lnk) & "|" & "H")
-                 ElseIf Path.GetExtension(ExeFileP) = ".cmd" Then
+                ElseIf Path.GetExtension(ExeFileP) = ".cmd" Then
                     StartupEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.WinBAT, Family.Inde, VariantL.U, Suffixes.lnk) & "|" & "H")
                     StartupEngine.Add(CompleteFile & "|" & GenerateFormat(Type.Suspect, Platforms.WinBAT, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "M")
                 ElseIf Path.GetExtension(ExeFileP) = ".bat" Then
@@ -1883,14 +1930,52 @@ NextFile:
             If Label12.Text = "Quick Scan" Then
                 Dim CleanResult As Boolean = CleanAntivir()
             ElseIf Label12.Text = "Custom Scan" Then
-
+                Dim CleanResult As Boolean = CleanCustomAntivir()
             End If
         Catch ex As Exception
             WriteLog(ex.Message, InfoType.Exception)
         End Try
     End Sub
 
+
+    Public Function CleanCustomAntivir() As Boolean
+        Dim Process_List As New List(Of String)
+
+        Process_List.AddRange({"cmd", "wscript", "powershell"})
+
+        For Each Process_Item As String In Process_List
+            Dim Kp As Boolean = KillProcess(Process_Item)
+        Next
+
+
+        For Each childControl In PanelBoxVir.Controls
+            Dim controlnumber As Integer = 0
+            If TypeOf childControl Is DetectionControl Then
+                Dim DeleteCheck As Boolean = childControl.DeleteCheckbox()
+                Dim VirDir As String = childControl.VirPath()
+
+                If DeleteCheck = True Then
+                    ' PanelBoxVir.Controls.RemoveAt(controlnumber)
+                    childControl.VisibleC = False
+                    Dim ProcessVir As String = Path.GetFileName(VirDir)
+
+                    If My.Computer.FileSystem.FileExists(VirDir) = True Then
+                        Dim Kp As Boolean = KillProcess(ProcessVir)
+                        My.Computer.FileSystem.DeleteFile(VirDir)
+                    End If
+
+                End If
+
+            End If
+
+            controlnumber += 1
+        Next
+
+        Return True
+    End Function
+
     Public Function CleanAntivir() As Boolean
+        On Error Resume Next
 
         Dim Process_List As New List(Of String)
 
@@ -1902,24 +1987,28 @@ NextFile:
 
 
         For Each childControl In PanelBoxVir.Controls
+            Dim controlnumber As Integer = 0
             If TypeOf childControl Is DetectionControl Then
                 Dim DeleteCheck As Boolean = childControl.DeleteCheckbox()
                 Dim VirDir As String = childControl.VirPath()
                 If DeleteCheck = True Then
                     Dim AnalicePath As String() = VirDir.Split("\")
                     Dim Fname As String = Path.GetFileName(VirDir)
-
+                    childControl.VisibleC = False
                     'antes
-                    If AnalicePath(0) = "HKEY_CURRENT_USER" Then
-                        GoTo RegeditHKCU
-                    ElseIf AnalicePath(0) = "HKEY_LOCAL_MACHINE" Then
-                        GoTo RegeditHKLM
-                    End If
+                    'If AnalicePath(0) = "HKEY_CURRENT_USER" Then
+                    'GoTo RegeditHKCU
+                    'ElseIf AnalicePath(0) = "HKEY_LOCAL_MACHINE" Then
+                    '     GoTo RegeditHKLM
+                    'End If
 
                     'Ahora
+
                     Select Case AnalicePath(0)
                         Case "HKEY_CURRENT_USER" : GoTo RegeditHKCU
                         Case "HKEY_LOCAL_MACHINE" : GoTo RegeditHKLM
+                        Case Else
+                            GoTo File
                     End Select
 
 File:
@@ -1934,14 +2023,11 @@ File:
                     End If
 
                     If My.Computer.FileSystem.FileExists(VirDir) = True Then
-
                         My.Computer.FileSystem.DeleteFile(VirDir)
-
                     End If
 
-
-
                     GoTo Jump
+
 RegeditHKCU:
 
                     RegEdit.DeleteValue(fullKeyPath:=GenerateRegeditFormat(AnalicePath, "HKCU"),
@@ -1956,10 +2042,12 @@ RegeditHKLM:
                     GoTo Jump
 Jump:
 
-
+                    ' PanelBoxVir.Controls.RemoveAt(controlnumber)
+                    ' controlnumber += 1
                 End If
             End If
         Next
+
         Return True
     End Function
 
@@ -1970,7 +2058,7 @@ Jump:
 
     Public CustomScannerEngine As New List(Of String)
 
-    Public Function CustomScannerStart(ByVal Filedir As String()) As Boolean
+    Public Function CustomScannerStart(ByVal Filedir As String(), ByVal SOption As SearchOption) As Boolean
         If Filedir.Count > 0 Then
 
             For Each FileorFolder As String In Filedir
@@ -1979,7 +2067,7 @@ Jump:
                 If Check = True Then
 
                     Dim files As IEnumerable(Of FileInfo) = FileDirSearcher.GetFiles(dirPath:=FileorFolder,
-                                                                         searchOption:=SearchOption.TopDirectoryOnly,
+                                                                         searchOption:=SearchOption.AllDirectories,
                                                                          fileNamePatterns:={"*"},
                                                                          fileExtPatterns:={"*.bat", "*.cmd", "*.vbs", "*.wsf", "*.ps1", "*.js", "*.hta", "*.exe"},
                                                                          ignoreCase:=True,
@@ -2073,10 +2161,23 @@ NextFile:
 
 #End Region
 
+#Region " About "
 
+    Private Sub PictureBox10_Click(sender As Object, e As EventArgs) Handles PictureBox10.Click
+        System.Diagnostics.Process.Start("https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Ftoolslib.net%2Fdownloads%2Fviewdownload%2F548-strely%2F")
+    End Sub
 
+    Private Sub PictureBox9_Click(sender As Object, e As EventArgs) Handles PictureBox9.Click
+        System.Diagnostics.Process.Start("https://twitter.com/intent/tweet?text=http%3A%2F%2Ftoolslib.net%2Fdownloads%2Fviewdownload%2F548-strely%2F")
+    End Sub
 
+    Private Sub PictureBox8_Click(sender As Object, e As EventArgs) Handles PictureBox8.Click
+        System.Diagnostics.Process.Start("https://plus.google.com/share?url=http%3A%2F%2Ftoolslib.net%2Fdownloads%2Fviewdownload%2F548-strely%2F")
+    End Sub
 
+#End Region
+
+  
 
 End Class
 

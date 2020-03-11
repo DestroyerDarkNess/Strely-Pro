@@ -34,11 +34,11 @@ Partial Class Form1
         Me.Timer5 = New System.Windows.Forms.Timer(Me.components)
         Me.TimerScan = New System.Windows.Forms.Timer(Me.components)
         Me.OpenFileDialog1 = New Ookii.Dialogs.VistaOpenFileDialog()
+        Me.VistaFolderBrowserDialog1 = New Ookii.Dialogs.VistaFolderBrowserDialog()
         Me.AscThemeContainer1 = New StrelyCleanner.ascThemeContainer()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.AscTabControl1 = New StrelyCleanner.ascTabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.Button3 = New System.Windows.Forms.Button()
         Me.PictureBox4 = New System.Windows.Forms.PictureBox()
         Me.lbl_Antivirus = New System.Windows.Forms.Label()
         Me.PictureBox3 = New System.Windows.Forms.PictureBox()
@@ -74,13 +74,14 @@ Partial Class Form1
         Me.AscButton_Big2 = New StrelyCleanner.ascButton_Big()
         Me.AscButton_Big1 = New StrelyCleanner.ascButton_Big()
         Me.Panel7 = New System.Windows.Forms.Panel()
+        Me.Label13 = New System.Windows.Forms.Label()
+        Me.Label5 = New System.Windows.Forms.Label()
         Me.AnimaProgressBar1 = New StrelyCleanner.AnimaProgressBar()
         Me.AscSwitch1 = New StrelyCleanner.ascSwitch()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.lbl_ram = New System.Windows.Forms.Label()
         Me.lbl_cpu = New System.Windows.Forms.Label()
         Me.pb_RAM = New StrelyCleanner.ascProgressBar()
-        Me.Label5 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.pb_CPU = New StrelyCleanner.ascProgressBar()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
@@ -104,6 +105,20 @@ Partial Class Form1
         Me.Label8 = New System.Windows.Forms.Label()
         Me.ThirteenTextBox1 = New StrelyCleanner.ThirteenTextBox()
         Me.BoosterButton1 = New StrelyCleanner.BoosterButton()
+        Me.TabPage5 = New System.Windows.Forms.TabPage()
+        Me.Label17 = New System.Windows.Forms.Label()
+        Me.AnimaTextBox1 = New StrelyCleanner.AnimaTextBox()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.Button4 = New System.Windows.Forms.Button()
+        Me.XylosSeparator2 = New StrelyCleanner.XylosSeparator()
+        Me.XylosSeparator1 = New StrelyCleanner.XylosSeparator()
+        Me.PictureBox11 = New System.Windows.Forms.PictureBox()
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.PictureBox8 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox9 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox10 = New System.Windows.Forms.PictureBox()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.Button3 = New System.Windows.Forms.Button()
         Me.PanelBarraTitulo = New System.Windows.Forms.Panel()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
@@ -134,6 +149,11 @@ Partial Class Form1
         Me.panItemDetail.SuspendLayout()
         CType(Me.exeIcon, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage6.SuspendLayout()
+        Me.TabPage5.SuspendLayout()
+        CType(Me.PictureBox11, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox8, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox9, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox10, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelBarraTitulo.SuspendLayout()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -209,6 +229,7 @@ Partial Class Form1
         Me.AscTabControl1.Controls.Add(Me.TabPage3)
         Me.AscTabControl1.Controls.Add(Me.TabPage4)
         Me.AscTabControl1.Controls.Add(Me.TabPage6)
+        Me.AscTabControl1.Controls.Add(Me.TabPage5)
         Me.AscTabControl1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.AscTabControl1.Font = New System.Drawing.Font("Arial", 12.0!)
         Me.AscTabControl1.ItemSize = New System.Drawing.Size(0, 34)
@@ -222,7 +243,6 @@ Partial Class Form1
         'TabPage1
         '
         Me.TabPage1.BackColor = System.Drawing.Color.FromArgb(CType(CType(32, Byte), Integer), CType(CType(36, Byte), Integer), CType(CType(39, Byte), Integer))
-        Me.TabPage1.Controls.Add(Me.Button3)
         Me.TabPage1.Controls.Add(Me.PictureBox4)
         Me.TabPage1.Controls.Add(Me.lbl_Antivirus)
         Me.TabPage1.Controls.Add(Me.PictureBox3)
@@ -235,15 +255,6 @@ Partial Class Form1
         Me.TabPage1.Size = New System.Drawing.Size(743, 477)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "HOME"
-        '
-        'Button3
-        '
-        Me.Button3.Location = New System.Drawing.Point(242, 224)
-        Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(150, 64)
-        Me.Button3.TabIndex = 10
-        Me.Button3.Text = "Test"
-        Me.Button3.UseVisualStyleBackColor = True
         '
         'PictureBox4
         '
@@ -459,10 +470,10 @@ Partial Class Form1
         Me.Bouton1.Customization = "tZ01//////8="
         Me.Bouton1.Font = New System.Drawing.Font("Segoe UI", 12.0!)
         Me.Bouton1.Image = Nothing
-        Me.Bouton1.Location = New System.Drawing.Point(628, 170)
+        Me.Bouton1.Location = New System.Drawing.Point(622, 8)
         Me.Bouton1.Name = "Bouton1"
         Me.Bouton1.NoRounding = False
-        Me.Bouton1.Size = New System.Drawing.Size(101, 38)
+        Me.Bouton1.Size = New System.Drawing.Size(101, 35)
         Me.Bouton1.TabIndex = 11
         Me.Bouton1.Text = "Clean"
         Me.Bouton1.Transparent = False
@@ -542,7 +553,7 @@ Partial Class Form1
         Me.PanelBoxVir.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None
         Me.PanelBoxVir.Location = New System.Drawing.Point(13, 161)
         Me.PanelBoxVir.Name = "PanelBoxVir"
-        Me.PanelBoxVir.Size = New System.Drawing.Size(609, 271)
+        Me.PanelBoxVir.Size = New System.Drawing.Size(710, 271)
         Me.PanelBoxVir.TabIndex = 3
         Me.PanelBoxVir.Visible = False
         '
@@ -656,13 +667,14 @@ Partial Class Form1
         '
         'Panel7
         '
+        Me.Panel7.Controls.Add(Me.Label13)
+        Me.Panel7.Controls.Add(Me.Label5)
         Me.Panel7.Controls.Add(Me.AnimaProgressBar1)
         Me.Panel7.Controls.Add(Me.AscSwitch1)
         Me.Panel7.Controls.Add(Me.Label6)
         Me.Panel7.Controls.Add(Me.lbl_ram)
         Me.Panel7.Controls.Add(Me.lbl_cpu)
         Me.Panel7.Controls.Add(Me.pb_RAM)
-        Me.Panel7.Controls.Add(Me.Label5)
         Me.Panel7.Controls.Add(Me.Label4)
         Me.Panel7.Controls.Add(Me.pb_CPU)
         Me.Panel7.Dock = System.Windows.Forms.DockStyle.Top
@@ -670,6 +682,34 @@ Partial Class Form1
         Me.Panel7.Name = "Panel7"
         Me.Panel7.Size = New System.Drawing.Size(743, 95)
         Me.Panel7.TabIndex = 14
+        '
+        'Label13
+        '
+        Me.Label13.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label13.AutoSize = True
+        Me.Label13.Font = New System.Drawing.Font("Consolas", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label13.ForeColor = System.Drawing.Color.SlateGray
+        Me.Label13.Location = New System.Drawing.Point(7, 2)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Size = New System.Drawing.Size(168, 15)
+        Me.Label13.TabIndex = 13
+        Me.Label13.Text = "Estimated Refresh Rate:"
+        '
+        'Label5
+        '
+        Me.Label5.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label5.AutoSize = True
+        Me.Label5.Font = New System.Drawing.Font("Corbel", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label5.ForeColor = System.Drawing.Color.DeepSkyBlue
+        Me.Label5.Location = New System.Drawing.Point(7, 54)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(98, 15)
+        Me.Label5.TabIndex = 3
+        Me.Label5.Text = "Estimated RAM :"
         '
         'AnimaProgressBar1
         '
@@ -727,7 +767,7 @@ Partial Class Form1
         Me.lbl_cpu.AutoSize = True
         Me.lbl_cpu.Font = New System.Drawing.Font("Corbel", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lbl_cpu.ForeColor = System.Drawing.Color.DeepSkyBlue
-        Me.lbl_cpu.Location = New System.Drawing.Point(513, 17)
+        Me.lbl_cpu.Location = New System.Drawing.Point(513, 22)
         Me.lbl_cpu.Name = "lbl_cpu"
         Me.lbl_cpu.Size = New System.Drawing.Size(35, 15)
         Me.lbl_cpu.TabIndex = 5
@@ -739,27 +779,13 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pb_RAM.Font = New System.Drawing.Font("Arial", 11.0!)
-        Me.pb_RAM.Location = New System.Drawing.Point(44, 59)
+        Me.pb_RAM.Location = New System.Drawing.Point(111, 59)
         Me.pb_RAM.Maximum = 100
         Me.pb_RAM.Name = "pb_RAM"
-        Me.pb_RAM.Size = New System.Drawing.Size(463, 10)
+        Me.pb_RAM.Size = New System.Drawing.Size(396, 10)
         Me.pb_RAM.TabIndex = 4
         Me.pb_RAM.Text = "AscProgressBar2"
         Me.pb_RAM.Value = 0
-        '
-        'Label5
-        '
-        Me.Label5.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Label5.AutoSize = True
-        Me.Label5.Font = New System.Drawing.Font("Corbel", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.ForeColor = System.Drawing.Color.DeepSkyBlue
-        Me.Label5.Location = New System.Drawing.Point(7, 54)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(34, 15)
-        Me.Label5.TabIndex = 3
-        Me.Label5.Text = "RAM"
         '
         'Label4
         '
@@ -769,11 +795,11 @@ Partial Class Form1
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Corbel", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label4.ForeColor = System.Drawing.Color.DeepSkyBlue
-        Me.Label4.Location = New System.Drawing.Point(7, 17)
+        Me.Label4.Location = New System.Drawing.Point(7, 22)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(31, 15)
+        Me.Label4.Size = New System.Drawing.Size(94, 15)
         Me.Label4.TabIndex = 2
-        Me.Label4.Text = "CPU"
+        Me.Label4.Text = "Estimated CPU :"
         '
         'pb_CPU
         '
@@ -781,10 +807,10 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pb_CPU.Font = New System.Drawing.Font("Arial", 11.0!)
-        Me.pb_CPU.Location = New System.Drawing.Point(44, 22)
+        Me.pb_CPU.Location = New System.Drawing.Point(111, 27)
         Me.pb_CPU.Maximum = 100
         Me.pb_CPU.Name = "pb_CPU"
-        Me.pb_CPU.Size = New System.Drawing.Size(463, 10)
+        Me.pb_CPU.Size = New System.Drawing.Size(396, 10)
         Me.pb_CPU.TabIndex = 0
         Me.pb_CPU.Text = "AscProgressBar1"
         Me.pb_CPU.Value = 0
@@ -1017,10 +1043,11 @@ Partial Class Form1
         Me.ThirteenTextBox1.ColorScheme = StrelyCleanner.ThirteenTextBox.ColorSchemes.Custom
         Me.ThirteenTextBox1.CustomBackColor = System.Drawing.Color.Black
         Me.ThirteenTextBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!)
-        Me.ThirteenTextBox1.ForeColor = System.Drawing.Color.White
+        Me.ThirteenTextBox1.ForeColor = System.Drawing.Color.DodgerBlue
         Me.ThirteenTextBox1.Location = New System.Drawing.Point(17, 91)
         Me.ThirteenTextBox1.Multiline = True
         Me.ThirteenTextBox1.Name = "ThirteenTextBox1"
+        Me.ThirteenTextBox1.ReadOnly = True
         Me.ThirteenTextBox1.Size = New System.Drawing.Size(703, 379)
         Me.ThirteenTextBox1.TabIndex = 2
         '
@@ -1035,6 +1062,184 @@ Partial Class Form1
         Me.BoosterButton1.TabIndex = 1
         Me.BoosterButton1.Text = "Refresh"
         Me.BoosterButton1.UseVisualStyleBackColor = True
+        '
+        'TabPage5
+        '
+        Me.TabPage5.BackColor = System.Drawing.Color.FromArgb(CType(CType(32, Byte), Integer), CType(CType(36, Byte), Integer), CType(CType(39, Byte), Integer))
+        Me.TabPage5.Controls.Add(Me.Label17)
+        Me.TabPage5.Controls.Add(Me.AnimaTextBox1)
+        Me.TabPage5.Controls.Add(Me.Label16)
+        Me.TabPage5.Controls.Add(Me.Button4)
+        Me.TabPage5.Controls.Add(Me.XylosSeparator2)
+        Me.TabPage5.Controls.Add(Me.XylosSeparator1)
+        Me.TabPage5.Controls.Add(Me.PictureBox11)
+        Me.TabPage5.Controls.Add(Me.Label15)
+        Me.TabPage5.Controls.Add(Me.PictureBox8)
+        Me.TabPage5.Controls.Add(Me.PictureBox9)
+        Me.TabPage5.Controls.Add(Me.PictureBox10)
+        Me.TabPage5.Controls.Add(Me.Label14)
+        Me.TabPage5.Controls.Add(Me.Button3)
+        Me.TabPage5.ForeColor = System.Drawing.SystemColors.HotTrack
+        Me.TabPage5.Location = New System.Drawing.Point(4, 38)
+        Me.TabPage5.Name = "TabPage5"
+        Me.TabPage5.Size = New System.Drawing.Size(743, 477)
+        Me.TabPage5.TabIndex = 5
+        Me.TabPage5.Text = "About ..."
+        '
+        'Label17
+        '
+        Me.Label17.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label17.AutoSize = True
+        Me.Label17.Font = New System.Drawing.Font("Consolas", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label17.ForeColor = System.Drawing.Color.SlateGray
+        Me.Label17.Location = New System.Drawing.Point(505, 455)
+        Me.Label17.Name = "Label17"
+        Me.Label17.Size = New System.Drawing.Size(231, 15)
+        Me.Label17.TabIndex = 62
+        Me.Label17.Text = "S4Lsalsoft | All rights reserved"
+        '
+        'AnimaTextBox1
+        '
+        Me.AnimaTextBox1.Dark = False
+        Me.AnimaTextBox1.Font = New System.Drawing.Font("Consolas", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.AnimaTextBox1.Location = New System.Drawing.Point(45, 162)
+        Me.AnimaTextBox1.MaxLength = 32767
+        Me.AnimaTextBox1.MultiLine = True
+        Me.AnimaTextBox1.Name = "AnimaTextBox1"
+        Me.AnimaTextBox1.Numeric = False
+        Me.AnimaTextBox1.ReadOnly = True
+        Me.AnimaTextBox1.Size = New System.Drawing.Size(643, 49)
+        Me.AnimaTextBox1.TabIndex = 61
+        Me.AnimaTextBox1.Text = "      E-mail: S4Lsalsoft@gmail.com    |    Whatsapp: +58(412)-303-6808           " & _
+    "                              -Please only communicate if you need help. (Do not" & _
+    " bother)       "
+        Me.AnimaTextBox1.UseSystemPasswordChar = False
+        '
+        'Label16
+        '
+        Me.Label16.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label16.AutoSize = True
+        Me.Label16.Font = New System.Drawing.Font("Consolas", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label16.ForeColor = System.Drawing.Color.SlateGray
+        Me.Label16.Location = New System.Drawing.Point(42, 140)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(175, 15)
+        Me.Label16.TabIndex = 60
+        Me.Label16.Text = "Contact / Support Forms:"
+        '
+        'Button4
+        '
+        Me.Button4.Enabled = False
+        Me.Button4.FlatAppearance.BorderColor = System.Drawing.Color.DodgerBlue
+        Me.Button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.Button4.Location = New System.Drawing.Point(30, 135)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(681, 88)
+        Me.Button4.TabIndex = 59
+        Me.Button4.UseVisualStyleBackColor = True
+        '
+        'XylosSeparator2
+        '
+        Me.XylosSeparator2.Location = New System.Drawing.Point(7, 237)
+        Me.XylosSeparator2.Name = "XylosSeparator2"
+        Me.XylosSeparator2.Size = New System.Drawing.Size(729, 2)
+        Me.XylosSeparator2.TabIndex = 57
+        Me.XylosSeparator2.Text = "XylosSeparator2"
+        '
+        'XylosSeparator1
+        '
+        Me.XylosSeparator1.Location = New System.Drawing.Point(7, 374)
+        Me.XylosSeparator1.Name = "XylosSeparator1"
+        Me.XylosSeparator1.Size = New System.Drawing.Size(729, 2)
+        Me.XylosSeparator1.TabIndex = 56
+        Me.XylosSeparator1.Text = "XylosSeparator1"
+        '
+        'PictureBox11
+        '
+        Me.PictureBox11.Dock = System.Windows.Forms.DockStyle.Top
+        Me.PictureBox11.Image = CType(resources.GetObject("PictureBox11.Image"), System.Drawing.Image)
+        Me.PictureBox11.Location = New System.Drawing.Point(0, 0)
+        Me.PictureBox11.Name = "PictureBox11"
+        Me.PictureBox11.Size = New System.Drawing.Size(743, 129)
+        Me.PictureBox11.TabIndex = 55
+        Me.PictureBox11.TabStop = False
+        '
+        'Label15
+        '
+        Me.Label15.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label15.AutoSize = True
+        Me.Label15.Font = New System.Drawing.Font("Consolas", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label15.ForeColor = System.Drawing.Color.SlateGray
+        Me.Label15.Location = New System.Drawing.Point(104, 271)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(539, 60)
+        Me.Label15.TabIndex = 54
+        Me.Label15.Text = "This program is TOTALLY FREE! (Freeware). I, the creator, do this for Hobby." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & " If" & _
+    " you liked the program, you can share it with your friends ." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Thank you for us" & _
+    "ing Strely! "
+        '
+        'PictureBox8
+        '
+        Me.PictureBox8.BackgroundImage = CType(resources.GetObject("PictureBox8.BackgroundImage"), System.Drawing.Image)
+        Me.PictureBox8.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PictureBox8.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.PictureBox8.Location = New System.Drawing.Point(169, 423)
+        Me.PictureBox8.Name = "PictureBox8"
+        Me.PictureBox8.Size = New System.Drawing.Size(48, 47)
+        Me.PictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox8.TabIndex = 53
+        Me.PictureBox8.TabStop = False
+        '
+        'PictureBox9
+        '
+        Me.PictureBox9.BackgroundImage = CType(resources.GetObject("PictureBox9.BackgroundImage"), System.Drawing.Image)
+        Me.PictureBox9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PictureBox9.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.PictureBox9.Location = New System.Drawing.Point(93, 423)
+        Me.PictureBox9.Name = "PictureBox9"
+        Me.PictureBox9.Size = New System.Drawing.Size(48, 47)
+        Me.PictureBox9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox9.TabIndex = 52
+        Me.PictureBox9.TabStop = False
+        '
+        'PictureBox10
+        '
+        Me.PictureBox10.BackgroundImage = CType(resources.GetObject("PictureBox10.BackgroundImage"), System.Drawing.Image)
+        Me.PictureBox10.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PictureBox10.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.PictureBox10.Location = New System.Drawing.Point(19, 423)
+        Me.PictureBox10.Name = "PictureBox10"
+        Me.PictureBox10.Size = New System.Drawing.Size(48, 47)
+        Me.PictureBox10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.PictureBox10.TabIndex = 51
+        Me.PictureBox10.TabStop = False
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.ForeColor = System.Drawing.Color.SlateGray
+        Me.Label14.Location = New System.Drawing.Point(4, 390)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(129, 18)
+        Me.Label14.TabIndex = 50
+        Me.Label14.Text = "Share this app in:"
+        '
+        'Button3
+        '
+        Me.Button3.Enabled = False
+        Me.Button3.FlatAppearance.BorderColor = System.Drawing.Color.DodgerBlue
+        Me.Button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.Button3.Location = New System.Drawing.Point(30, 251)
+        Me.Button3.Name = "Button3"
+        Me.Button3.Size = New System.Drawing.Size(681, 107)
+        Me.Button3.TabIndex = 58
+        Me.Button3.UseVisualStyleBackColor = True
         '
         'PanelBarraTitulo
         '
@@ -1055,11 +1260,11 @@ Partial Class Form1
         Me.Label7.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label7.AutoSize = True
-        Me.Label7.Font = New System.Drawing.Font("Corbel", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label7.Font = New System.Drawing.Font("Consolas", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label7.ForeColor = System.Drawing.Color.White
-        Me.Label7.Location = New System.Drawing.Point(648, 4)
+        Me.Label7.Location = New System.Drawing.Point(678, 24)
         Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(96, 23)
+        Me.Label7.Size = New System.Drawing.Size(73, 13)
         Me.Label7.TabIndex = 10
         Me.Label7.Text = "v1.3.0 beta"
         '
@@ -1110,6 +1315,7 @@ Partial Class Form1
         Me.ClientSize = New System.Drawing.Size(753, 562)
         Me.Controls.Add(Me.AscThemeContainer1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.Name = "Form1"
         Me.Text = "Strely Pro Cleanner"
@@ -1143,6 +1349,12 @@ Partial Class Form1
         CType(Me.exeIcon, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabPage6.ResumeLayout(False)
         Me.TabPage6.PerformLayout()
+        Me.TabPage5.ResumeLayout(False)
+        Me.TabPage5.PerformLayout()
+        CType(Me.PictureBox11, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox8, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox9, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox10, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelBarraTitulo.ResumeLayout(False)
         Me.PanelBarraTitulo.PerformLayout()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1212,7 +1424,6 @@ Partial Class Form1
     Friend WithEvents Label8 As System.Windows.Forms.Label
     Friend WithEvents Timer5 As System.Windows.Forms.Timer
     Friend WithEvents PictureBox5 As System.Windows.Forms.PictureBox
-    Friend WithEvents Button3 As System.Windows.Forms.Button
     Friend WithEvents AnimaButton1 As StrelyCleanner.AnimaButton
     Friend WithEvents AnimaButton2 As StrelyCleanner.AnimaButton
     Friend WithEvents PanelBoxVir As System.Windows.Forms.Panel
@@ -1235,5 +1446,21 @@ Partial Class Form1
     Friend WithEvents Timestamp As System.Windows.Forms.Label
     Friend WithEvents AnimaStatusBar1 As StrelyCleanner.AnimaStatusBar
     Friend WithEvents OpenFileDialog1 As Ookii.Dialogs.VistaOpenFileDialog
+    Friend WithEvents VistaFolderBrowserDialog1 As Ookii.Dialogs.VistaFolderBrowserDialog
+    Friend WithEvents Label13 As System.Windows.Forms.Label
+    Friend WithEvents TabPage5 As System.Windows.Forms.TabPage
+    Friend WithEvents PictureBox8 As System.Windows.Forms.PictureBox
+    Friend WithEvents PictureBox9 As System.Windows.Forms.PictureBox
+    Friend WithEvents PictureBox10 As System.Windows.Forms.PictureBox
+    Friend WithEvents Label14 As System.Windows.Forms.Label
+    Friend WithEvents PictureBox11 As System.Windows.Forms.PictureBox
+    Friend WithEvents Label15 As System.Windows.Forms.Label
+    Friend WithEvents Label17 As System.Windows.Forms.Label
+    Friend WithEvents AnimaTextBox1 As StrelyCleanner.AnimaTextBox
+    Friend WithEvents Label16 As System.Windows.Forms.Label
+    Friend WithEvents Button4 As System.Windows.Forms.Button
+    Friend WithEvents XylosSeparator2 As StrelyCleanner.XylosSeparator
+    Friend WithEvents XylosSeparator1 As StrelyCleanner.XylosSeparator
+    Friend WithEvents Button3 As System.Windows.Forms.Button
 
 End Class

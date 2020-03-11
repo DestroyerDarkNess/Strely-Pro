@@ -4,7 +4,7 @@
 
 #Region " Ignore Exceptions "
 
-        Public Shared LogFile = CurDir() & "\" & System.Reflection.Assembly.GetExecutingAssembly.GetName().Name & ".log"
+        Public Shared LogFile = Application.StartupPath & "\" & System.Reflection.Assembly.GetExecutingAssembly.GetName().Name & ".log"
 
         Public Enum InfoType
             Information

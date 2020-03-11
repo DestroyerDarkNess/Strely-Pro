@@ -99,7 +99,7 @@ Public Class NetAnalysis
                         For Each strI As String In SimbolsC
                             If Texti.Contains(strI) = True Then
                                 Detection2 = strI
-                                MsgBox(strI & "    " & Texti)
+                                'MsgBox(strI & "    " & Texti)
                                 BoolScan2 = True
                                 Porcent2 += 1
                                 If Scan2 = String.Empty Then
