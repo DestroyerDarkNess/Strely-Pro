@@ -64,7 +64,7 @@
             Win98 'Windows 98 platform only
             WinCE 'Windows CE platform
             WinNT 'WinNT
-
+            Win
             'Scripting languages
 
             ABAP  'Advanced Business Application Programming scripts

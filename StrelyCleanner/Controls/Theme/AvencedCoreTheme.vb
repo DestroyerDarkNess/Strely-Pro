@@ -67,10 +67,10 @@ Class ascThemeContainer
         Dim slope As Integer = 8
 
         Dim mainRect As New Rectangle(0, 0, Width - 1, Height - 1)
-        Dim mainPath As GraphicsPath = RoundRect(mainRect, slope)
+        Dim mainPath As GraphicsPath = Drawing.RoundRect(mainRect, slope)
         G.FillPath(New SolidBrush(BackColor), mainPath)
         G.DrawPath(New Pen(Color.FromArgb(5, 135, 250)), mainPath)
-        G.FillPath(New SolidBrush(Color.FromArgb(5, 135, 250)), RoundRect(New Rectangle(0, 0, Width - 1, moveHeight - slope), slope))
+        G.FillPath(New SolidBrush(Color.FromArgb(5, 135, 250)), Drawing.RoundRect(New Rectangle(0, 0, Width - 1, moveHeight - slope), slope))
         G.FillRectangle(New SolidBrush(Color.FromArgb(5, 135, 250)), New Rectangle(0, moveHeight - (slope * 2), Width - 1, slope * 2))
         G.DrawLine(New Pen(Color.FromArgb(60, 60, 60)), New Point(1, moveHeight), New Point(Width - 2, moveHeight))
         G.SmoothingMode = SmoothingMode.HighQuality
@@ -189,7 +189,7 @@ Class ascButton
         Dim slope As Integer = 5
 
         Dim mainRect As New Rectangle(0, 0, Width - 1, Height - 1)
-        Dim mainPath As GraphicsPath = RoundRect(mainRect, slope)
+        Dim mainPath As GraphicsPath = Drawing.RoundRect(mainRect, slope)
         G.FillPath(New LinearGradientBrush(mainRect, BackColor, Color.FromArgb(25, Color.Black), 90.0F), mainPath)
         G.DrawPath(New Pen(Color.FromArgb(BackColor.R / 2, BackColor.G / 2, BackColor.B / 2)), mainPath)
 
@@ -466,14 +466,14 @@ Class ascProgressBar
 
         Dim midY As Integer = ((Height - 1) / 2)
         Dim mainRect As New Rectangle(12, midY - 4, Width - 25, 7)
-        Dim mainPath As GraphicsPath = RoundRect(mainRect, slope)
+        Dim mainPath As GraphicsPath = Drawing.RoundRect(mainRect, slope)
         Dim barBrush As New LinearGradientBrush(mainRect, Color.FromArgb(32, 32, 32), Color.FromArgb(45, 45, 45), 90.0F)
         G.FillPath(barBrush, mainPath)
 
         Dim barRect As New Rectangle(12, midY - 4, CInt(((Width / _Maximum) * _Value) - ((_percent - 1) / 4)), 7)
         If barRect.Width > 0 Then
             Dim barHorizontal As New LinearGradientBrush(barRect, Color.FromArgb(5, 80, 140), Color.FromArgb(45, 180, 200), 0.0F)
-            G.FillPath(barHorizontal, RoundRect(barRect, slope))
+            G.FillPath(barHorizontal, Drawing.RoundRect(barRect, slope))
 
             Dim vertCB As New ColorBlend(5)
             vertCB.Colors(0) = Color.Transparent
@@ -484,12 +484,12 @@ Class ascProgressBar
             vertCB.Positions = New Single() {0.0, 0.4, 0.5, 0.6, 1.0}
             Dim barVertical As New LinearGradientBrush(barRect, Color.Black, Color.Black, 90.0F)
             barVertical.InterpolationColors = vertCB
-            G.FillPath(barVertical, RoundRect(barRect, slope))
+            G.FillPath(barVertical, Drawing.RoundRect(barRect, slope))
         End If
 
         If _Value > 0 Then
             Dim bubbleRect As New Rectangle(barRect.Width - 3, 0, midY * 2 - 3, midY * 2)
-            Dim bubblePath As GraphicsPath = RoundRect(bubbleRect, midY)
+            Dim bubblePath As GraphicsPath = Drawing.RoundRect(bubbleRect, midY)
             Dim bubbleBrush As New PathGradientBrush(bubblePath)
             bubbleBrush.CenterColor = Color.FromArgb(230, 245, 255)
             bubbleBrush.SurroundColors = {Color.Transparent}
@@ -590,7 +590,7 @@ End Class
         Height = 17
 
         Dim mainRect As New Rectangle(0, 0, Width - 1, Height - 1)
-        Dim mainPath As GraphicsPath = RoundRect(mainRect, slope)
+        Dim mainPath As GraphicsPath = Drawing.RoundRect(mainRect, slope)
 
         If _checked Then
             Dim bgBrush As New LinearGradientBrush(mainRect, Color.FromArgb(10, 30, 50), Color.FromArgb(5, 80, 140), 90.0F)

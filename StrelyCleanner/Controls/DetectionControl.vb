@@ -61,6 +61,15 @@
         End Set
     End Property
 
+    Public Property CheckedBox() As Boolean
+        Get
+            Return ThirteenCheckBox1.Checked
+        End Get
+        Set(ByVal value As Boolean)
+            ThirteenCheckBox1.Checked = value
+        End Set
+    End Property
+
 #End Region
 
 #Region " Funcs "

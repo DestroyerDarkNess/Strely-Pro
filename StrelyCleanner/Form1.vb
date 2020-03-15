@@ -203,6 +203,29 @@ Public Class Form1
 
 #Region " Bosster "
 
+    Private Sub KILLToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles KILLToolStripMenuItem.Click
+        Dim ItemIndex As Integer = Nothing
+        Dim PIDv As Integer = Nothing
+        Dim PText As String = String.Empty
+        Dim PCaption As String = String.Empty
+        Dim aProcess As System.Diagnostics.Process
+        Try
+            ItemIndex = AnimaExperimentalListView1.SelectedIndex
+            PIDv = Integer.Parse(AnimaExperimentalListView1.Items(ItemIndex).Text)
+            PText = AnimaExperimentalListView1.Items(ItemIndex).SubItems(1).Text
+            PCaption = AnimaExperimentalListView1.Items(ItemIndex).SubItems(2).Text
+        Catch ex As Exception
+            WriteLog(ex.Message, InfoType.Exception)
+        End Try
+        Try
+            aProcess = System.Diagnostics.Process.GetProcessById(PIDv)
+            aProcess.Kill()
+            AnimaExperimentalListView1.RemoveItem(ItemIndex)
+        Catch ex As Exception
+            WriteLog(ex.Message & vbTab & "Process Killer Error: " & PText & "(" & PCaption & ")", InfoType.Exception)
+        End Try
+    End Sub
+
     Public Sub InicoBoos()
         StartScanProcessAsyc()
         InicioGrapt()
@@ -280,7 +303,7 @@ Public Class Form1
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Dim Cpuval As Integer = pc_CPU.NextValue - cpuPorcent
-        Dim Ramval As Integer = pc_RAM.NextValue - RamPorcent
+        Dim Ramval As Integer = pc_RAM.NextValue - (RamPorcent - GetRandom(1, 9))
         pb_CPU.Value = Cpuval
         pb_RAM.Value = Ramval
         lbl_cpu.Text = pb_CPU.Value - cpuPorcent & "%"
@@ -301,8 +324,13 @@ Public Class Form1
             AnimaProgressBar1.BorderColors = Color.Lime
             DrawGrgphic(CPURAM, Color.Lime)
         End If
-        AnimaProgressBar1.Value = CPURAM
+       AnimaProgressBar1.Value = CPURAM
     End Sub
+
+    Public Function GetRandom(ByVal Min As Integer, ByVal Max As Integer) As Integer
+        Dim Generator As System.Random = New System.Random()
+        Return Generator.Next(Min, Max)
+    End Function
 
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
         SleepT += 1
@@ -316,12 +344,23 @@ Public Class Form1
     Private Sub AscButton_Big2_Click(sender As Object, e As EventArgs) Handles AscButton_Big2.Click
         If AscButton_Big2.Text = "Show" Then
             AscButton_Big2.Text = "Hide"
+            Panel4.AutoScroll = True
             Panel4.Size = New Size(889, 477)
         ElseIf AscButton_Big2.Text = "Hide" Then
             AscButton_Big2.Text = "Show"
+            Panel4.AutoScroll = False
             Panel4.Size = New Size(652, 25)
         End If
     End Sub
+
+    Public Function CalculateYsize() As Integer
+        Dim ItemsN As Integer = AnimaExperimentalListView1.Items.Count
+        Dim SizeN As Integer = ItemsN * 25
+        If SizeN < 450 Then
+            SizeN = 450
+        End If
+        Return SizeN
+    End Function
 
     Public Sub OPInizialice()
         Dim RamOp As Boolean = RamOptimize()
@@ -370,7 +409,11 @@ ScanS:
                         ' AnimaExperimentalListView1.Items.
                         Me.Invoke(Sub() Display(item))
                     Next
-
+                    Me.Invoke(Sub()
+                                  If AscButton_Big2.Text = "Hide" Then
+                                      AnimaExperimentalListView1.Size = New Size(725, CalculateYsize)
+                                  End If
+                              End Sub)
                 End If
                 ContadorS = 0
             End If
@@ -1048,16 +1091,50 @@ CloseOut:
             Next
             ThirteenTextBox1.Text = ""
             ThirteenTextBox1.Text = "" & vbNewLine ' "ARP Inspect .......................................... Beta Test " & vbNewLine
+
             For index As Integer = 0 To entries - 1
                 If table(index).dwType <> DWTYPES.Invalid And table(index).dwType <> DWTYPES.Other Then
+
+                    Dim AddLineText As String = String.Empty
+                    Dim CheckPp As Boolean = False
+                    Dim TypeN As String = table(index).dwType.ToString
                     Dim ip As New IPAddress(table(index).dwAddr)
                     Dim mac As New PhysicalAddress(table(index).bPhysAddr)
-                    Dim PingS As String = Ping(ip.ToString()) ', 200, System.Text.Encoding.ASCII.GetBytes("Hello"), True
+                    Dim PingS As String = String.Empty
 
-                    ThirteenTextBox1.Text = ThirteenTextBox1.Text & vbNewLine & _
-                    table(index).dwType.ToString & vbTab & vbTab & "IP: " + ip.ToString() & vbTab & vbTab & "MAC: " & MACtoString(mac) & vbTab & vbTab & "PING: " & PingS
+                    If PingCheckBox2.Checked = True Then
+                        PingS = Ping(ip.ToString())
+                    Else
+                        PingS = String.Empty
+                    End If
+                    
+                    If table(index).dwType = DWTYPES.Dynamic Then
+                        If DynamicCheckBox2.Checked = True Then
+                            AddLineText = TypeN & vbTab & vbTab & "IP: " + ip.ToString() & vbTab & vbTab & "MAC: " & MACtoString(mac)
+                            CheckPp = True
+                        End If
+                    ElseIf table(index).dwType = DWTYPES.Static Then
+                        If StaticCheckBox1.Checked = True Then
+                            AddLineText = TypeN & vbTab & vbTab & "IP: " + ip.ToString() & vbTab & vbTab & "MAC: " & MACtoString(mac)
+                            CheckPp = True
+                        End If
+                    ElseIf table(index).dwType = DWTYPES.Other Then
+                        AddLineText = TypeN & vbTab & vbTab & "IP: " + ip.ToString() & vbTab & vbTab & "MAC: " & MACtoString(mac)
+                        CheckPp = True
+                    End If
 
+                    If Not PingS = String.Empty Then
+                        AddLineText = AddLineText & vbTab & vbTab & "Ping: " & PingS
+                    End If
+
+                    If CheckPp = True Then
+                        ThirteenTextBox1.Text += AddLineText & vbNewLine
+                    End If
+
+                    AddLineText = String.Empty
+                    CheckPp = False
                 End If
+
             Next
 
         Finally
@@ -1067,7 +1144,35 @@ CloseOut:
     End Sub
 
     Private Sub BoosterButton1_Click(sender As Object, e As EventArgs) Handles BoosterButton1.Click
-        GetARPTablr()
+        ThirteenTextBox1.Text = ""
+        Select Case AnimaExperimentalControlBox1.SelectedIndex
+            Case 0
+                ThirteenTextBox1.Text = AdapterReport()
+            Case 1
+                GetARPTablr()
+            Case 2
+                CmdScanner()
+            Case 3
+                ThirteenTextBox1.Text = GetNet()
+         End Select
+    End Sub
+
+    Private Sub NetworkTimer_Tick(sender As Object, e As EventArgs) Handles NetworkTimer.Tick
+        Select Case AnimaExperimentalControlBox1.SelectedIndex
+            Case 0
+                ControlsManaget(False)
+            Case 1
+                ControlsManaget(True)
+            Case 2
+                ControlsManaget(False)
+            Case 3
+                ControlsManaget(False)
+        End Select
+    End Sub
+
+    Public Sub ControlsManaget(ByVal VisibleL As Boolean)
+        Panel6.Visible = VisibleL
+        Panel8.Visible = VisibleL
     End Sub
 
     Public Shared Function MACtoString(mac As PhysicalAddress, Optional Capital As Boolean = True) As String
@@ -1076,6 +1181,47 @@ CloseOut:
         Else
             Return String.Join(":", (From z As Byte In mac.GetAddressBytes Select z.ToString("x2")).ToArray())
         End If
+    End Function
+
+    Public Function GetNet() As String
+        Dim DevicesC As Integer = 0
+        Dim addlineText As String = String.Empty
+        Dim Devices As ArrayList = ListNetworkComputers.NetworkBrowser.getNetworkComputers
+        For Each ItemD In Devices
+            addlineText += ItemD.ToString & vbNewLine
+            DevicesC += 1
+        Next
+        addlineText += vbNewLine & vbNewLine & vbNewLine
+        addlineText += "Totals Devices : " & DevicesC
+        Return addlineText
+    End Function
+
+    Private Sub CmdScanner()
+        Dim p As New Process
+        With p.StartInfo
+            .FileName = "arp"
+            .Arguments = "-a"
+            .UseShellExecute = False
+            .RedirectStandardOutput = True
+            .CreateNoWindow = True
+        End With
+        p.Start()
+        ThirteenTextBox1.Text = p.StandardOutput.ReadToEnd
+    End Sub
+
+    Private Function AdapterReport() As String
+        Dim addlineText As String = String.Empty
+        Dim adapters As NetworkInterface() = NetworkInterface.GetAllNetworkInterfaces()
+        Dim adapter As NetworkInterface
+        For Each adapter In adapters
+            Dim properties As IPInterfaceProperties = adapter.GetIPProperties()
+            addlineText += "Description: " & adapter.Description & vbNewLine
+            addlineText += "DNS suffix: " & properties.DnsSuffix & vbNewLine
+            addlineText += "DNS enabled: " & properties.IsDnsEnabled.ToString & vbNewLine
+            addlineText += "Dynamically configured DNS: " & properties.IsDynamicDnsEnabled.ToString & vbNewLine
+            addlineText += vbNewLine
+        Next adapter
+        Return addlineText
     End Function
 
 #Region " Ping "
@@ -1274,6 +1420,8 @@ CloseOut:
 
     Dim CustomResult As Boolean = False
 
+    Dim USBResult As Boolean = False
+
     Dim FinalizeAntivir As Boolean = False
 
     Dim Progress As Integer = 0
@@ -1286,6 +1434,7 @@ CloseOut:
         FinalizeAntivir = False
         GenerateListBool = False
         CustomResult = False
+        USBResult = False
         Progress = 0
         DetectionsCount = 0
         Local_X = 20
@@ -1301,6 +1450,7 @@ CloseOut:
         StartupEngine.Clear()
         RegeditEngine.Clear()
         AppDataEngine.Clear()
+        USBScannerEngine.Clear()
         CustomScannerEngine.Clear()
         Bouton1.Visible = False
         PanelBoxVir.Visible = False
@@ -1416,43 +1566,83 @@ CloseOut:
                     ' Progress += 1
                     Progress1.Value += 20
                 Else
-                    StatusLabel.Text = "Startup Scanned Successfully!"
+                    StatusLabel.Text = "Reading Bytes()"
                 End If
 
                 If Not Progress2.Value = 100 Then
                     ' Progress += 1
                     Progress2.Value += 20
                 Else
-                    StatusLabel.Text = "Startup_Regedit Scanned Successfully!"
+                    StatusLabel.Text = "Running Analysis Engine"
                 End If
 
                 If Not Progress3.Value = 100 Then
                     ' Progress += 1
                     Progress3.Value += 20
                 Else
-                    StatusLabel.Text = "Misc Folders Scanned Successfully!"
+                    StatusLabel.Text = "Analyzing Files"
                 End If
 
-                If GenerateListBool = False Then
-                    GenericList()
-                    GenerateListBool = True
+                If FinalizeAntivir = True Then
+                    If GenerateListBool = False Then
+                        GenericList()
+                        GenerateListBool = True
+                    End If
                 End If
+               
 
             End If
 
-            If Progress1.Value = 100 Then
-                If Progress2.Value = 100 Then
-                    If Progress3.Value = 100 Then
-                        If Progress4.Value = 100 Then
-                            StatusLabel.Text = "Number of threats found : " & PanelBoxVir.Controls.Count
-                            Execution_End()
-                            TimerScan.Enabled = False
-                        Else
-                            Progress4.Value += 10
+            ElseIf Label12.Text = "USB Scan" Then
+
+            If USBResult = True Then
+
+                If Not Progress1.Value = 100 Then
+                    ' Progress += 1
+                    Progress1.Value += 20
+                Else
+                    StatusLabel.Text = "Analyzing Files and Folders"
+                End If
+
+                If Not Progress2.Value = 100 Then
+                    ' Progress += 1
+                    Progress2.Value += 20
+                Else
+                    StatusLabel.Text = "Running Analysis Engine"
+                End If
+
+                If Not Progress3.Value = 100 Then
+                    ' Progress += 1
+                    Progress3.Value += 20
+                Else
+                    StatusLabel.Text = "Running Signature Detector."
+                End If
+
+
+                If FinalizeAntivir = True Then
+                    If GenerateListBool = False Then
+                        GenericList()
+                        GenerateListBool = True
+                    End If
+                End If
+
+
+
+            End If
+
+                If Progress1.Value = 100 Then
+                    If Progress2.Value = 100 Then
+                        If Progress3.Value = 100 Then
+                            If Progress4.Value = 100 Then
+                                StatusLabel.Text = "Number of threats found : " & PanelBoxVir.Controls.Count
+                                Execution_End()
+                                TimerScan.Enabled = False
+                            Else
+                                Progress4.Value += 10
+                            End If
                         End If
                     End If
                 End If
-            End If
 
         End If
 
@@ -1520,8 +1710,23 @@ CloseOut:
 
                If CustomResult = True Then
                    If CustomScannerEngine.Count > 0 Then
-                       ' MsgBox(CustomScannerEngine(0).ToString)
+
                        For Each Result As String In CustomScannerEngine
+                           GeneralResult.Add(Result)
+                       Next
+                   End If
+               End If
+
+               FinalizeAntivir = True
+
+           ElseIf Label12.Text = "USB Scan" Then
+
+               USBResult = USBScannerStart(Filedir(0))
+
+               If USBResult = True Then
+                   If USBScannerEngine.Count > 0 Then
+
+                       For Each Result As String In USBScannerEngine
                            GeneralResult.Add(Result)
                        Next
                    End If
@@ -1931,6 +2136,8 @@ NextFile:
                 Dim CleanResult As Boolean = CleanAntivir()
             ElseIf Label12.Text = "Custom Scan" Then
                 Dim CleanResult As Boolean = CleanCustomAntivir()
+            ElseIf Label12.Text = "USB Scan" Then
+                Dim CleanResult As Boolean = CleanCustomAntivir()
             End If
         Catch ex As Exception
             WriteLog(ex.Message, InfoType.Exception)
@@ -1946,7 +2153,6 @@ NextFile:
         For Each Process_Item As String In Process_List
             Dim Kp As Boolean = KillProcess(Process_Item)
         Next
-
 
         For Each childControl In PanelBoxVir.Controls
             Dim controlnumber As Integer = 0
@@ -2111,6 +2317,7 @@ Jump:
 
         Return False
 
+
 EXE:
         If IsNetAssembly(FileP) = True Then
             Dim scan As Boolean = NetScan(FileP)
@@ -2161,6 +2368,239 @@ NextFile:
 
 #End Region
 
+#Region " USB Scan "
+
+    Public USBScannerEngine As New List(Of String)
+
+    Public Function USBScannerStart(ByVal Filedir As String) As Boolean
+        On Error Resume Next
+
+        Dim Process_List As New List(Of String)
+
+        Process_List.AddRange({"cmd", "wscript", "powershell"})
+
+        For Each Process_Item As String In Process_List
+            Dim Kp As Boolean = KillProcess(Process_Item)
+        Next
+
+        Dim dirs As IEnumerable(Of DirectoryInfo) = FileDirSearcher.GetDirs(dirPath:=Filedir,
+                                                                    searchOption:=SearchOption.AllDirectories)
+        For Each Folder In dirs
+            Dim FolderP As String = Folder.FullName
+            Dim folderName As String = Folder.Name
+            If Not folderName = "System Volume Information" Then
+                If (IO.File.GetAttributes(FolderP) And IO.FileAttributes.Hidden) = IO.FileAttributes.Hidden Then
+                    IO.File.SetAttributes(FolderP, IO.FileAttributes.Normal)
+                End If
+            End If
+        Next
+
+        Dim files As IEnumerable(Of FileInfo) = FileDirSearcher.GetFiles(dirPath:=Filedir,
+                                                             searchOption:=SearchOption.AllDirectories)
+
+
+        For Each File In files
+
+            Dim FileP As String = File.FullName
+
+            If (IO.File.GetAttributes(FileP) And IO.FileAttributes.Hidden) = IO.FileAttributes.Hidden Then
+                Attrib(FileP, FileAttributes.Normal)
+            End If
+
+            Dim ScanFiles As Boolean = UsbScanner(FileP)
+
+        Next
+
+        Return True
+
+    End Function
+
+    Public Function UsbScanner(ByVal DirPath As String) As Boolean
+        On Error Resume Next
+        Dim FileP As String = DirPath
+
+        Dim Extension As String = LCase(Path.GetExtension(FileP))
+
+        Select Case Extension
+            Case ".exe" : GoTo EXE
+            Case ".vbs" : GoTo VBS
+            Case ".wsf" : GoTo VBS
+            Case ".bat" : GoTo BAT
+            Case ".cmd" : GoTo BAT
+            Case ".js" : GoTo JS
+            Case ".ps1" : GoTo JS
+            Case ".hta" : GoTo HTA
+            Case ".lnk" : GoTo LNKUSB
+            Case Else
+                GoTo NextFile
+        End Select
+
+        Return False
+
+LNKUSB:
+
+        Dim FileLink As String = GetLnkTarget(FileP)
+        Dim SharePartion As String() = FileLink.Split("|")
+        Dim CompleteFile As String = SharePartion(0)
+        Dim ExeFileP As String = Path.GetFileName(CompleteFile)
+
+        If ExeFileP = "cmd.exe" Then
+            USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.Win, Family.NewPhotoDay, VariantL.D, Suffixes.lnk) & "|" & "M")
+        ElseIf ExeFileP = "wscript.exe" Then
+            USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.Win, Family.NewPhotoDay, VariantL.D, Suffixes.lnk) & "|" & "M")
+        ElseIf Path.GetExtension(ExeFileP) = ".cmd" Then
+            USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.Win, Family.NewPhotoDay, VariantL.D, Suffixes.lnk) & "|" & "M")
+            USBScannerEngine.Add(CompleteFile & "|" & GenerateFormat(Type.Suspect, Platforms.WinBAT, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "M")
+        ElseIf Path.GetExtension(ExeFileP) = ".bat" Then
+            USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.WinBAT, Family.Inde, VariantL.U, Suffixes.lnk) & "|" & "M")
+            USBScannerEngine.Add(CompleteFile & "|" & GenerateFormat(Type.Suspect, Platforms.WinBAT, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "M")
+        ElseIf Path.GetExtension(ExeFileP) = ".vbs" Then
+            USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.VBS, Family.Inde, VariantL.U, Suffixes.lnk) & "|" & "M")
+            USBScannerEngine.Add(CompleteFile & "|" & GenerateFormat(Type.Suspect, Platforms.VBS, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "M")
+        ElseIf Path.GetExtension(ExeFileP) = ".js" Then
+            USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.JS, Family.Inde, VariantL.U, Suffixes.lnk) & "|" & "M")
+            USBScannerEngine.Add(CompleteFile & "|" & GenerateFormat(Type.Virus, Platforms.JS, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+        ElseIf Path.GetExtension(ExeFileP) = ".wsf" Then
+            USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.VBS, Family.Inde, VariantL.U, Suffixes.lnk) & "|" & "M")
+            USBScannerEngine.Add(CompleteFile & "|" & GenerateFormat(Type.Virus, Platforms.VBS, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "M")
+        ElseIf Path.GetExtension(ExeFileP) = ".ps1" Then
+            USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.SH, Family.Inde, VariantL.U, Suffixes.lnk) & "|" & "M")
+            USBScannerEngine.Add(CompleteFile & "|" & GenerateFormat(Type.Virus, Platforms.SH, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "M")
+
+        ElseIf IsNetAssembly(SharePartion(0)) = True Then
+            Dim scan As Boolean = NetScan(SharePartion(0))
+            If scan = True Then
+                USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.Win32, Family.Inde, VariantL.U, Suffixes.lnk) & "|" & "M")
+
+                Dim DetectFamily As String = String.Empty
+                If Not NetAnalysis.Detection1 = String.Empty Then
+                    DetectFamily = NetAnalysis.Detection1
+                ElseIf Not NetAnalysis.Detection2 = String.Empty Then
+                    DetectFamily = NetAnalysis.Detection2
+                End If
+
+                If DetectFamily = String.Empty Then
+                    USBScannerEngine.Add(SharePartion(0) & "|" & GenerateFormat(Type.Virus, Platforms.Win32, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+                Else
+                    USBScannerEngine.Add(SharePartion(0) & "|" & GenerateFormat(Type.Virus, Platforms.Win32, Family.Inde, VariantL.U, Suffixes.gen, DetectFamily) & "|" & "H")
+                End If
+            End If
+        End If
+
+EXE:
+        If IsNetAssembly(FileP) = True Then
+            Dim scan As Boolean = NetScan(FileP)
+            If scan = True Then
+                Dim DetectFamily As String = String.Empty
+                If Not NetAnalysis.Detection1 = String.Empty Then
+                    DetectFamily = NetAnalysis.Detection1
+                ElseIf Not NetAnalysis.Detection2 = String.Empty Then
+                    DetectFamily = NetAnalysis.Detection2
+                End If
+
+                If DetectFamily = String.Empty Then
+                    USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.Win32, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+                Else
+                    USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Virus, Platforms.Win32, Family.Inde, VariantL.U, Suffixes.gen, DetectFamily) & "|" & "H")
+                End If
+            End If
+        End If
+
+        GoTo NextFile
+
+VBS:
+        USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.VBS, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+
+        GoTo NextFile
+BAT:
+        USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.WinBAT, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+
+        GoTo NextFile
+JS:
+        USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.JS, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+
+        GoTo NextFile
+PS1:
+        USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.SH, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+
+        GoTo NextFile
+HTA:
+        USBScannerEngine.Add(FileP & "|" & GenerateFormat(Type.Suspect, Platforms.HTA, Family.Inde, VariantL.U, Suffixes.gen) & "|" & "H")
+
+        GoTo NextFile
+
+NextFile:
+
+        Return True
+    End Function
+
+    Private Function Attrib(ByVal File As String, ByVal Attributes As System.IO.FileAttributes)
+        If IO.File.Exists(File) Then
+            Try
+                FileSystem.SetAttr(File, Attributes)
+                Return True ' File was modified OK
+            Catch ex As Exception
+                ' MsgBox(ex.Message)
+                Return False ' File can't be modified maybe because User Permissions
+            End Try
+        Else
+            Return Nothing ' File doesn't exist
+        End If
+    End Function
+
+    Private Sub ThirteenButton1_Click(sender As Object, e As EventArgs) Handles ThirteenButton1.Click
+        USBDialog.ShowDialog()
+        Dim Dirty As String = USBDialog.SelectedPath
+        If Not Dirty = "" Then
+            Filedir = {Dirty}
+            RestoreSett()
+            CleanVirusPanel.Size = New Size(737, 468)
+            Label12.Text = "USB Scan"
+            TimerScan.Enabled = True
+            Execution_Start()
+            Dim tskAntivir As New Task(ScanAsyc, TaskCreationOptions.LongRunning)
+            tskAntivir.Start()
+        End If
+    End Sub
+
+#End Region
+
+#Region " Antivir Contextmenu "
+
+    Private Sub SelectALLToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectALLToolStripMenuItem.Click
+        SelectALL()
+    End Sub
+
+    Private Sub OpenInFolderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenInFolderToolStripMenuItem.Click
+        OpenThread()
+    End Sub
+
+    Public Sub SelectALL()
+        For Each childControl In PanelBoxVir.Controls
+            Dim controlnumber As Integer = 0
+            If TypeOf childControl Is DetectionControl Then
+                childControl.CheckedBox() = True
+            End If
+        Next
+    End Sub
+
+    Public Sub OpenThread()
+        For Each childControl In PanelBoxVir.Controls
+            Dim controlnumber As Integer = 0
+            If TypeOf childControl Is DetectionControl Then
+                If childControl.CheckedBox() = True Then
+                    Dim DirPath As String = childControl.VirusDir()
+                    If (IO.File.GetAttributes(DirPath) And IO.FileAttributes.Hidden) = IO.FileAttributes.Hidden Then
+                        Attrib(DirPath, FileAttributes.Normal)
+                    End If
+                    ExploreFile(DirPath)
+                End If
+            End If
+        Next
+    End Sub
+
+#End Region
+
 #Region " About "
 
     Private Sub PictureBox10_Click(sender As Object, e As EventArgs) Handles PictureBox10.Click
@@ -2175,9 +2615,12 @@ NextFile:
         System.Diagnostics.Process.Start("https://plus.google.com/share?url=http%3A%2F%2Ftoolslib.net%2Fdownloads%2Fviewdownload%2F548-strely%2F")
     End Sub
 
+    Private Sub PictureBox12_Click(sender As Object, e As EventArgs) Handles PictureBox12.Click
+        System.Diagnostics.Process.Start("https://www.paypal.me/SalvadorKrilewski")
+    End Sub
+
 #End Region
 
-  
 
 End Class
 

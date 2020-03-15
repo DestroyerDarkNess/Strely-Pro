@@ -233,7 +233,6 @@ Public Class XylosTabControl
 
 End Class
 
-
 Public Class XylosCheckBox
     Inherits Control
 
@@ -1042,10 +1041,23 @@ Public Class XylosButton
         End Set
     End Property
 
+    Private _BackColorA As Color = Color.White
+    Public Property BackColorA As Color
+        Get
+            Return _BackColorA
+        End Get
+        Set(value As Color)
+            _BackColorA = value
+            Invalidate()
+        End Set
+    End Property
+
+
+
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
 
         G = e.Graphics
-        G.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+        G.SmoothingMode = Drawing2D.SmoothingMode.HighSpeed
         G.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit
 
         MyBase.OnPaint(e)
@@ -1068,7 +1080,7 @@ Public Class XylosButton
 
                 Case Else
 
-                    Using Background As New SolidBrush(HelpersXylos.ColorFromHex("#F6F6F6"))
+                    Using Background As New SolidBrush(_BackColorA) 'HelpersXylos.ColorFromHex("#F6F6F6")
                         G.FillPath(Background, HelpersXylos.RoundRect1(HelpersXylos.FullRectangle(Size, True), 3))
                     End Using
 
@@ -1081,7 +1093,7 @@ Public Class XylosButton
 
         Else
 
-            Using Background As New SolidBrush(HelpersXylos.ColorFromHex("#F3F4F7")), Border As New Pen(HelpersXylos.ColorFromHex("#DCDCDC")), ButtonFont As New Font("Segoe UI", 9)
+            Using Background As New SolidBrush(_BackColorA), Border As New Pen(Color.White), ButtonFont As New Font("Segoe UI", 9)
                 G.FillPath(Background, HelpersXylos.RoundRect1(HelpersXylos.FullRectangle(Size, True), 3))
                 G.DrawPath(Border, HelpersXylos.RoundRect1(HelpersXylos.FullRectangle(Size, True), 3))
                 HelpersXylos.CenterString(G, Text, ButtonFont, HelpersXylos.ColorFromHex("#D0D3D7"), HelpersXylos.FullRectangle(Size, False))

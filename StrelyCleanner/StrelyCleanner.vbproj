@@ -91,6 +91,9 @@
     <Compile Include="Controls\DetectionControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\Theme\LogInTheme.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Theme\MByteTheme.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -131,9 +134,7 @@
     <Compile Include="Controls\Theme\BoosterTheme.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Theme\ColdTheme.vb">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Core\ListNetworkComputers.vb" />
     <Compile Include="Destroyer\Core\AutoExeFuncs.vb" />
     <Compile Include="Core\GUIFuncs.vb" />
     <Compile Include="Destroyer\Protections.vb" />
@@ -183,6 +184,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="USBDialog.Designer.vb">
+      <DependentUpon>USBDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="USBDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\DetectionControl.resx">
@@ -205,6 +212,9 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="USBDialog.resx">
+      <DependentUpon>USBDialog.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
