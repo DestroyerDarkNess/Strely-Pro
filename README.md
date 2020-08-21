@@ -97,15 +97,12 @@ The Error Messages and Exceptions are written in a Log in real time.
 To submit bug reports/suggestions and other help, goto: [Issues](https://github.com/DestroyerDarkNess/Strely-Pro/issues) and create a new issue.
 
 ## License
-
 ```
-
 Low Licensed Software : " Creative Commons BY 3.0 "
 
 Copyright (c) 2019 By S4Lsalsoft
 
 https://github.com/DestroyerDarkNess/Strely-Pro/blob/master/LICENSE
-
 ```
 
 
