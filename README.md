@@ -3,12 +3,10 @@
 	<img src="https://i.ibb.co/x6Nj4VR/pngwing-com.png" alt="Strely-Pro Logo" width="100" height="100">
 	StrelyCleaner PRO
 </h1>
-
 <h2 align="center">
 	Discontinued
 	<br>
 </h2>
-
 <h3 align="center">This Is Archived. New one under development!</h3>
 
 ## information.
