@@ -16,7 +16,7 @@ It stands out in Finding RAT Clients created in .Net.
 
 Currently you only have a Part of the Detection Engine that I myself create. therefore it only detects malware created in .Net.
 
-Other content will be available in my <a href="https://github.com/DestroyerDarkNess/XylosAntivir">XylosAntivir api</a>.
+Other content will be available in my <a href="https://github.com/DestroyerDarkNess/XylonAntivir">XylonAntivir api</a>.
 
 ## Test It Out
 
