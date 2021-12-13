@@ -7,12 +7,12 @@
 	Discontinued
 	<br>
 </h2>
-<h3 align="center">This Is Archived. New one under development!</h3>
+<h3 align="center">This Is Archived. NNew Version HERE : https://github.com/DestroyerDarkNess/XylonV2 </h3>
 
 ## information.
 
 This is an anti-malware application built in VB.NET. Detects many malicious .Net malware and malicious scripts.
-It stands out in Finding RAT Clients created in .Net.
+It stands out in Finding RAT Clients created in .Net .
 
 Currently you only have a Part of the Detection Engine that I myself create. therefore it only detects malware created in .Net.
 
